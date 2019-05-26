@@ -2,11 +2,11 @@
 
 session_start();
 
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
+// if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
 
-} else{
-  header('Location: index.php');
-}
+// } else{
+//   header('Location: index.php');
+// }
 
 
 
@@ -21,7 +21,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>login</title>
+    <title>Dashboard</title>
 </head>
 
 <body>
@@ -33,15 +33,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
 </div>
 <br>
 
-<div class="w3-container">
-    <div class="w3-bar w3-light-grey w3-card-2">
-        <a href="dashboard.php" class="w3-bar-item w3-button w3-border-right">Home</a>
-        <a href="complaint_list.php" class="w3-bar-item w3-button w3-border-right">Senarai Aduan</a>
-        <a href="logout.php" class="w3-bar-item w3-button w3-right w3-border-left">Logout</a>
-    </div>
-    <br>
-
-</div>
+<?php include "include/nav.php"; ?>
 <div class="w3-container">
     <div class="w3-cell-row">
 

@@ -30,7 +30,8 @@
 
 
             <div class="w3-container w3-cell">
-                <form action="" method="post">
+                <h4 class="w3-center" id="mesej"></h4>
+                <form action="" method="post" id="formRegisterStudent">
                 <table class="w3-table w3-border">
                     <tbody>
                     <tr>
@@ -38,24 +39,24 @@
                     </tr>
                     <tr>
                         <th width="20%">Student ID / ID Pelajar</th>
-                        <td><input type="text" name="no_matrik" class="w3-input w3-border" autocomplete="off"></td>
+                        <td><input type="text" name="no_matrik" class="w3-input w3-border" autocomplete="off" id="no_matrik" required></td>
                     </tr>
                     <tr>
                         <th>Name / Nama</th>
-                        <td><input type="text" name="name" class="w3-input w3-border" autocomplete="off"></td>
+                        <td><input type="text" name="name" class="w3-input w3-border" autocomplete="off" required></td>
                     </tr>
                     <tr>
                         <th>Email / Emel</th>
-                        <td><input type="text" name="emel" class="w3-input w3-border" autocomplete="off"></td>
+                        <td><input type="email" name="emel" class="w3-input w3-border" autocomplete="off" required></td>
                     </tr>
                     <tr>
                         <th>Phone No / No Telefon</th>
-                        <td><input type="text" name="no_telefon" class="w3-input w3-border" autocomplete="off"></td>
+                        <td><input type="text" name="no_telefon" class="w3-input w3-border" autocomplete="off" required></td>
                     </tr>
                     <tr>
                         <th>Faculty / Fakulti</th>
                         <td>
-                            <select name="fakulti" id="" class="w3-input w3-border">
+                            <select name="fakulti" id="fakulti" class="w3-input w3-border" required>
                                 <option value="">--Sila Pilih--</option>
                                 <option value="Faculty Communication Visual Arts & Computing">Faculty Communication
                                     Visual Arts & Computing</option>
@@ -70,15 +71,15 @@
                     </tr>
                     <tr>
                         <th>Course / Aliran</th>
-                        <td><input type="text" name="aliran" class="w3-input w3-border" autocomplete="off"></td>
+                        <td><input type="text" name="aliran" class="w3-input w3-border" autocomplete="off" required></td>
                     </tr>
                     <tr>
                         <th>Password / Kata Laluan</th>
-                        <td><input type="password" name="password" class="w3-input w3-border"></td>
+                        <td><input type="password" id="password" name="password" class="w3-input w3-border" required></td>
                     </tr>
                     <tr>
                         <th>Confirm Password / Sahkan Kata Laluan</th>
-                        <td><input type="password" name="password" class="w3-input w3-border"></td>
+                        <td><input type="password" id="password2" name="password2" class="w3-input w3-border" required></td>
                     </tr>
                     <tr>
                         <th colspan="2" class="w3-center">
@@ -97,17 +98,7 @@
 
 
         </div>
-        <div class="w3-container w3-cell" style="width: 200px;">
-
-            <ul class="w3-ul">
-                <li><a href="#"><img
-                            src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
-                            width="30px" height="30px" alt="">Maklum Balas</a></li>
-                <li><a href="#"><img src="https://static.thenounproject.com/png/461886-200.png" alt="" width="30px"
-                                     height="30px">Manual</a></li>
-            </ul>
-
-        </div>
+        
     </div>
 
 
@@ -116,5 +107,55 @@
 
 </div>
 </body>
+<script src="js/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // $('#no_matrik').on('focusout', function(){
+        //     var val = $(this).val();
+        //     console.log(val);
+        //     // $('#validate_matrik').text(val);
+        //     // alert(val);
+        // });
 
+        $('#formRegisterStudent').on('submit', function(e){
+            e.preventDefault();
+
+            var password = $('#password').val();
+            var password2 = $('#password2').val();
+
+            if (password !== password2) {
+                // console.log('password not matching');
+                 $('#mesej').text('Kata Laluan Tidak Sama');
+            } else {
+                // console.log(password+password2);
+                var data = $(this).serialize();
+                $.ajax({
+                    url: "processRegStud.php",
+                    method: "POST",
+                    data: data,
+                    success: function(data){
+                        $('#mesej').html(data);
+                    },
+                    error: function() {
+                        alert('error handling here');
+                    }
+                });
+                $('#password').val('');
+                $('#password2').val('');
+                $('#fakulti').val('');
+                $('#formRegisterStudent').trigger("reset");
+
+            }
+           
+
+            
+
+        });
+    });
+</script>
+<style>
+    .bg-danger{
+        color: red;
+    }
+</style>
 </html>

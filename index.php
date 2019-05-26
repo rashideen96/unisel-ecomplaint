@@ -36,7 +36,7 @@
             <div class="w3-container w3-cell" style="width: 200px;">
 
                 <ul class="w3-ul">
-                    <li><a href="#"><img
+                    <li><a href="feedback.php"><img
                                 src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
                                 width="30px" height="30px" alt="">Maklum Balas</a></li>
                     <li><a href="#"><img src="https://static.thenounproject.com/png/461886-200.png" alt="" width="30px"

@@ -2,7 +2,7 @@
 
 session_start();
 
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
+if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
 
 } else{
   header('Location: index.php');
@@ -11,7 +11,6 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
 
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,22 +32,43 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
 </div>
 <br>
 
-<div class="w3-container">
-    <div class="w3-bar w3-light-grey w3-card-2">
-        <a href="dashboard.php" class="w3-bar-item w3-button w3-border-right">Home</a>
-        <a href="complaint_list.php" class="w3-bar-item w3-button w3-border-right">Senarai Aduan</a>
-        <a href="logout.php" class="w3-bar-item w3-button w3-right w3-border-left">Logout</a>
-    </div>
-    <br>
-
-</div>
+<?php include "include/nav.php"; ?>
 <div class="w3-container">
     <div class="w3-cell-row">
 
         <div class="w3-container w3-cell">
 
 
-            <h2>Selamat datang ke unisel ecomplaint</h2>
+            <table class="w3-table w3-table-all w3-bordered" id="myTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>complaint no</th>
+                    <th>name</th>
+                    <th>no id</th>
+                    <th>jawatan</th>
+                    <th>fakulti</th>
+                    <th>no tel</th>
+                    <th>bangunan</th>
+                    <th>status</th>
+                    <th>action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><a href="#">bj00001</a></td>
+                    <td>amir</td>
+                    <td>3164004561</td>
+                    <td>student</td>
+                    <td>FASBIO</td>
+                    <td>0122236014</td>
+                    <td>F1-GF-U4 (2)</td>
+                    <td>pending</td>
+                    <td><a href="complaint_detail.php"><i class="fas fa-pencil fa-2x"></i>lihat</a></td>
+                </tr>
+                </tbody>
+            </table>
 
         </div>
         <div class="w3-container w3-cell" style="width: 200px;">

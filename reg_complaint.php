@@ -15,42 +15,38 @@ if (isset($_POST['daftar'])) {
     // id complainer
     $complainer_id = $_SESSION['id'];
 
-    $no_bilik    = mysqli_real_escape_string($conn, trim($_POST['no_bilik']));
+    $no_bilik    = strtoupper(mysqli_real_escape_string($conn, trim($_POST['no_bilik'])));
     $jenis_aduan = mysqli_real_escape_string($conn, trim($_POST['complaint_type']));
-    $detail      = mysqli_real_escpae_string($conn, trim($_POST['detail']));
+    $detail      = mysqli_real_escape_string($conn, $_POST['detail']);
     $tarikh =   mysqli_real_escape_string($conn, trim($_POST['tarikh']));
     $masa   =   trim($_POST['dari']).' - '.trim($_POST['hingga']);
 
-    // gamba
-    // $_FILES['file']['tmp_name'];
-    // $_FILES['file']['name'];
-
+    
     $query = "INSERT INTO complaint_tbl(no_bilik, jenis_complaint, detail, tarikh, masa) VALUES('$no_bilik', '$jenis_aduan', '$detail', '$tarikh', '$masa')";
 
     if (mysqli_query($conn, $query)) {
         // echo "Aduan berjaya dihantar";
+        $msg = "Aduan berjaya dihantar";
         $last_id = mysqli_insert_id($conn);
-
-        // multiple upload
-        for ($i=0; $i < count($_FILES["file_img"]["name"]) ; $i++) { 
         
-            $filetmp = $_FILES["file_img"]["tmp_name"][$i];
-            $filename = $_FILES["file_img"]["name"][$i];
-            $filetype = $_FILES["file_img"]["type"][$i];
-            $filepath = "images/".$filename;
+    } else {
+        $msg = "Error";
+    }
 
-            move_uploaded_file($filetmp, $filepath);
+     // multiple upload
+    for ($i=0; $i < count($_FILES["file_img"]["name"]) ; $i++) { 
+        
+        $filetmp = $_FILES["file_img"]["tmp_name"][$i];
+        $filename = $_FILES["file_img"]["name"][$i];
+        $filetype = $_FILES["file_img"]["type"][$i];
+        $filepath = "photo/".$filename;
 
-            $sql = "INSERT INTO upload_img(complaint_id, img_name, img_path, img_type) ";
-            $sql .= "VALUES($last_id, '$filename', '$filepath', '$filetype')";
+        move_uploaded_file($filetmp, $filepath);
 
-            // $result = mysqli_query($conn, $sql);
-            if (mysqli_query($conn, $sql)) {
-                $msg = "Aduan berjaya dihantar";
-            } else {
-                die(mysqli_error($conn));
-            }
-        }
+        $sql = "INSERT INTO upload_img(complaint_id, img_name, img_path, img_type) ";
+        $sql .= "VALUES('$last_id', '$filename', '$filepath', '$filetype')";
+
+        $result = mysqli_query($conn, $sql);
     }
 
     
@@ -59,6 +55,7 @@ if (isset($_POST['daftar'])) {
 
 
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -94,13 +91,19 @@ if (isset($_POST['daftar'])) {
     <div class="w3-cell-row">
 
         <div class="w3-container w3-cell">
+            <?php 
+
+            if (isset($msg)) {
+                echo "<h4 class=\"w3-center\">{$msg}</h4>";
+            }
+             ?>
 
             <form action="" method="post" enctype="multipart/form-data">
             <table class="w3-table w3-border">
                 <tbody>
                 <tr>
                     <th style="width: 20%">Room No / No bilik</th>
-                    <td><input type="text" class="w3-input w3-border" placeholder="A3-2F-U4" name="no_bilik" required></td>
+                    <td><input type="text" class="w3-input w3-border" placeholder="A3-2F-U4" name="no_bilik" id="no_bilik" required></td>
                 </tr>
                 <tr>
                     <th>Complaint Type / Jenis Aduan</th>
@@ -117,7 +120,7 @@ if (isset($_POST['daftar'])) {
                 </tr>
                 <tr>
                     <th>Attachment / File / Gambar</th>
-                    <td><input type="file" name="file" class="w3-input" multiple>*Minimum 5 gambar</td>
+                    <td><input type="file" name="file_img[]" multiple>*Minimum 5 gambar</td>
 
                 </tr>
 
@@ -173,6 +176,7 @@ if (isset($_POST['daftar'])) {
 
     $(document).ready(function () {
         $( "#datepicker" ).datepicker();
+
     });
     $('#from').timepicker({
         'minTime': '9:00am',
