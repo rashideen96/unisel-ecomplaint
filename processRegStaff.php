@@ -1,14 +1,14 @@
 <?php 
 include "include/db.php";
-if (isset($_POST['no_matrik'])) {
+if (isset($_POST['no_staff'])) {
 
-	$role = 'student';
-	$no_matrik = $_POST['no_matrik'];
+	$role = 'staff';
+	$no_matrik = $_POST['no_staff'];
 	$name = $_POST['name'];
 	$emel = $_POST['emel'];
 	$no_telefon = $_POST['no_telefon'];
 	$fakulti = $_POST['fakulti'];
-	$aliran = $_POST['aliran'];
+	$jawatan = $_POST['position'];
 	$password = $_POST['password'];
 
 	// check matrik kad 
@@ -18,7 +18,7 @@ if (isset($_POST['no_matrik'])) {
 		$chek_matrik = mysqli_num_rows($matrik_query);
 
 		if ($chek_matrik == 0) {
-			echo "Matrik Kad Tiada Dalam Database Kami, Sila Rujuk Residen";
+			echo "ID Staff Tiada Dalam Database Kami, Sila Rujuk Residen";
 		} else {
 			// check email
 			$query = "SELECT email FROM users WHERE email='$emel'";
@@ -35,8 +35,8 @@ if (isset($_POST['no_matrik'])) {
 						$lokasi = 'SA';
 					}
 
-					$sql = "INSERT INTO users(role, name, username, email, password, icNum, matricNum, phoneNum, faculty, location, programe) ";
-					$sql.= "VALUES('$role', '$name', '$name', '$emel', '$password', '32223334', '$no_matrik', '$no_telefon', '$fakulti', '$lokasi', '$aliran')";
+					$sql = "INSERT INTO users(role, name, username, email, password, icNum, matricNum, phoneNum, faculty, location, staffPosition) ";
+					$sql.= "VALUES('$role', '$name', '$name', '$emel', '$password', '32223334', '$no_matrik', '$no_telefon', '$fakulti', '$lokasi', '$jawatan')";
 
 					if (mysqli_query($conn, $sql)) {
 						echo "Anda Telah didaftarkan, Sila Login";

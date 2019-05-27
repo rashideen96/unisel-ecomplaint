@@ -21,33 +21,50 @@ if (isset($_POST['daftar'])) {
     $tarikh =   mysqli_real_escape_string($conn, trim($_POST['tarikh']));
     $masa   =   trim($_POST['dari']).' - '.trim($_POST['hingga']);
 
+    // chek masa
+    $query_time = "SELECT tarikh FROM complaint_tbl WHERE tarikh = '$tarikh'";
+    $query_exec = mysqli_query($conn, $query_time);
+
+    if ($query_exec) {
+        $kira_masa_available = mysqli_num_rows($query_exec);
+
+        if ($kira_masa_available == 0) {
+            // Boleh buat aduan
+
+            $query = "INSERT INTO complaint_tbl(complainer_id, no_bilik, jenis_complaint, detail, tarikh, masa) VALUES($complainer_id,'$no_bilik', '$jenis_aduan', '$detail', '$tarikh', '$masa')";
+
+            if (mysqli_query($conn, $query)) {
+                // echo "Aduan berjaya dihantar";
+                $msg = "Aduan berjaya dihantar";
+                $last_id = mysqli_insert_id($conn);
+                
+            } else {
+                $msg = "Error";
+            }
+
+             // upload multiple image
+            for ($i=0; $i < count($_FILES["file_img"]["name"]) ; $i++) { 
+                
+                $filetmp = $_FILES["file_img"]["tmp_name"][$i];
+                $filename = $_FILES["file_img"]["name"][$i];
+                $filetype = $_FILES["file_img"]["type"][$i];
+                $filepath = "photo/".$filename;
+
+                move_uploaded_file($filetmp, $filepath);
+
+                $sql = "INSERT INTO upload_img(complaint_id, img_name, img_path, img_type) ";
+                $sql .= "VALUES('$last_id', '$filename', '$filepath', '$filetype')";
+
+                $result = mysqli_query($conn, $sql);
+            }
+        } else {
+
+            $msg = "Tarikh penyelenggaraan telah di booking, sila pilih tarikh lain";
+        }
+    }
+
     
-    $query = "INSERT INTO complaint_tbl(no_bilik, jenis_complaint, detail, tarikh, masa) VALUES('$no_bilik', '$jenis_aduan', '$detail', '$tarikh', '$masa')";
-
-    if (mysqli_query($conn, $query)) {
-        // echo "Aduan berjaya dihantar";
-        $msg = "Aduan berjaya dihantar";
-        $last_id = mysqli_insert_id($conn);
-        
-    } else {
-        $msg = "Error";
-    }
-
-     // multiple upload
-    for ($i=0; $i < count($_FILES["file_img"]["name"]) ; $i++) { 
-        
-        $filetmp = $_FILES["file_img"]["tmp_name"][$i];
-        $filename = $_FILES["file_img"]["name"][$i];
-        $filetype = $_FILES["file_img"]["type"][$i];
-        $filepath = "photo/".$filename;
-
-        move_uploaded_file($filetmp, $filepath);
-
-        $sql = "INSERT INTO upload_img(complaint_id, img_name, img_path, img_type) ";
-        $sql .= "VALUES('$last_id', '$filename', '$filepath', '$filetype')";
-
-        $result = mysqli_query($conn, $sql);
-    }
+    
 
     
 }
@@ -103,7 +120,7 @@ if (isset($_POST['daftar'])) {
                 <tbody>
                 <tr>
                     <th style="width: 20%">Room No / No bilik</th>
-                    <td><input type="text" class="w3-input w3-border" placeholder="A3-2F-U4" name="no_bilik" id="no_bilik" required></td>
+                    <td><input type="text" class="w3-input w3-border" placeholder="A3-2F-U4" name="no_bilik" id="no_bilik" required autocomplete="off"></td>
                 </tr>
                 <tr>
                     <th>Complaint Type / Jenis Aduan</th>
@@ -130,7 +147,7 @@ if (isset($_POST['daftar'])) {
                 </tr>
                 <tr>
                     <th>Date / Tarikh penyelenggaraan</th>
-                    <td><input type="text" name="tarikh" id="datepicker" class="w3-input w3-border"></td>
+                    <td><input type="text" name="tarikh" id="datepicker" class="w3-input w3-border" autocomplete="off"></td>
                 </tr>
                 <tr>
                     <th>Available time / Waktu penyelenggaraan</th>
@@ -175,7 +192,9 @@ if (isset($_POST['daftar'])) {
 <script>
 
     $(document).ready(function () {
-        $( "#datepicker" ).datepicker();
+        $( "#datepicker" ).datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
 
     });
     $('#from').timepicker({

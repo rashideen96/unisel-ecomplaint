@@ -6,7 +6,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
     header('Location: login.php');
 }
 
-
+include "include/db.php";
 
 ?>
 
@@ -45,32 +45,31 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
 
         <div class="w3-container w3-cell">
 
-            <table class="w3-table w3-table-all w3-bordered" id="myTable">
+            <table class="w3-table w3-bordered" id="myTable">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>complaint no</th>
-                    <th>name</th>
-                    <th>no id</th>
-                    <th>jawatan</th>
-                    <th>fakulti</th>
-                    <th>no tel</th>
-                    <th>bangunan</th>
-                    <th>status</th>
+                    <th>No.</th>
+                    <th>Complaint Type</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><a href="#">bj00001</a></td>
-                    <td>amir</td>
-                    <td>3164004561</td>
-                    <td>student</td>
-                    <td>FASBIO</td>
-                    <td>0122236014</td>
-                    <td>F1-GF-U4 (2)</td>
-                    <td>pending</td>
-                </tr>
+                    <?php 
+
+                    $complainer_id = $_SESSION['id'];
+                    $sql = "SELECT id, jenis_complaint FROM complaint_tbl WHERE complainer_id = $complainer_id";
+                    $run_query = mysqli_query($conn, $sql);
+
+                    while ($row = mysqli_fetch_assoc($run_query)) {
+                        
+                        echo "<tr>";
+                        echo "<td>{$row['id']}</td>";
+                        echo "<td>{$row['jenis_complaint']}</td>";
+                        echo "<td><a class=\"color\" href=\"view_complaint.php?id={$row['id']}\">pending</a></td>";
+                        echo "</tr>";
+                    }
+                     ?>
+                
                 </tbody>
             </table>
         </div>
@@ -102,5 +101,9 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
         } );
     });
 </script>
-
+<style>
+    .color {
+        color: red;
+    }
+</style>
 </html>

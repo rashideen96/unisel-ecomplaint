@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>Student Register</title>
+    <title>Staff Register</title>
 </head>
 <body>
 <div class="w3-center">
@@ -30,7 +30,8 @@
 
 
             <div class="w3-container w3-cell">
-                <form action="" method="post">
+                <h4 class="w3-center" id="mesej"></h4>
+                <form action="" method="post" id="formRegisterStaff">
                     <table class="w3-table w3-border">
                         <tbody>
                         <tr>
@@ -38,24 +39,24 @@
                         </tr>
                         <tr>
                             <th width="20%">Staff ID / ID Staf</th>
-                            <td><input type="text" name="no_staff" class="w3-input w3-border" autocomplete="off"></td>
+                            <td><input type="text" name="no_staff" class="w3-input w3-border" autocomplete="off" required></td>
                         </tr>
                         <tr>
                             <th>Name / Nama</th>
-                            <td><input type="text" name="name" class="w3-input w3-border" autocomplete="off"></td>
+                            <td><input type="text" name="name" class="w3-input w3-border" autocomplete="off" required></td>
                         </tr>
                         <tr>
                             <th>Email / Emel</th>
-                            <td><input type="text" name="emel" class="w3-input w3-border" autocomplete="off"></td>
+                            <td><input type="text" name="emel" class="w3-input w3-border" autocomplete="off" required></td>
                         </tr>
                         <tr>
                             <th>Phone No / No Telefon</th>
-                            <td><input type="text" name="no_telefon" class="w3-input w3-border" autocomplete="off"></td>
+                            <td><input type="text" name="no_telefon" class="w3-input w3-border" autocomplete="off" required></td>
                         </tr>
                         <tr>
                             <th>Faculty / Fakulti</th>
                             <td>
-                                <select name="fakulti" id="" class="w3-input w3-border">
+                                <select name="fakulti" id="" class="w3-input w3-border" required>
                                     <option value="">--Sila Pilih--</option>
                                     <option value="Faculty Communication Visual Arts & Computing">Faculty Communication
                                         Visual Arts & Computing</option>
@@ -70,15 +71,15 @@
                         </tr>
                         <tr>
                             <th>Position / Jawatan</th>
-                            <td><input type="text" name="position" class="w3-input w3-border" autocomplete="off"></td>
+                            <td><input type="text" name="position" class="w3-input w3-border" autocomplete="off" required></td>
                         </tr>
                         <tr>
                             <th>Password / Kata Laluan</th>
-                            <td><input type="password" name="password" class="w3-input w3-border"></td>
+                            <td><input type="password" id="password" name="password" class="w3-input w3-border" required></td>
                         </tr>
                         <tr>
                             <th>Confirm Password / Sahkan Kata Laluan</th>
-                            <td><input type="password" name="password" class="w3-input w3-border"></td>
+                            <td><input type="password" id="password2" name="password2" class="w3-input w3-border" required></td>
                         </tr>
                         <tr>
                             <th colspan="2" class="w3-center">
@@ -106,5 +107,45 @@
 
 </div>
 </body>
+<script src="js/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        
+        $('#formRegisterStaff').on('submit', function(e){
+            e.preventDefault();
+
+            var password = $('#password').val();
+            var password2 = $('#password2').val();
+
+            if (password !== password2) {
+                // console.log('password not matching');
+                 $('#mesej').text('Kata Laluan Tidak Sama');
+            } else {
+                // console.log(password+password2);
+                var data = $(this).serialize();
+                $.ajax({
+                    url: "processRegStaff.php",
+                    method: "POST",
+                    data: data,
+                    success: function(data){
+                        $('#mesej').html(data);
+                    },
+                    error: function() {
+                        alert('error handling here');
+                    }
+                });
+                $('#password').val('');
+                $('#password2').val('');
+                $('#fakulti').val('');
+                $('#formRegisterStaff').trigger("reset");
+
+            }
+           
+
+            
+
+        });
+    });
+</script>
 
 </html>
