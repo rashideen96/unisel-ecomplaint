@@ -8,7 +8,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
   header('Location: index.php');
 }
 
-
+include "include/db.php";
 
 ?>
 <!DOCTYPE html>
@@ -20,6 +20,8 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css">
     <title>login</title>
 </head>
 
@@ -50,46 +52,52 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
             <table class="w3-table w3-table-all w3-bordered" id="myTable">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>complaint no</th>
-                    <th>name</th>
-                    <th>no id</th>
-                    <th>jawatan</th>
-                    <th>fakulti</th>
-                    <th>no tel</th>
-                    <th>bangunan</th>
-                    <th>status</th>
-                    <th>action</th>
+                    <th>No.</th>
+                    <th>Jenis Aduan</th>
+                    <th>Status Aduan</th>
+                    <th>Lihat</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><a href="#">bj00001</a></td>
-                    <td>amir</td>
-                    <td>3164004561</td>
-                    <td>student</td>
-                    <td>FASBIO</td>
-                    <td>0122236014</td>
-                    <td>F1-GF-U4 (2)</td>
-                    <td>pending</td>
-                    <td><a href="complaint_detail.php"><i class="fas fa-pencil fa-2x"></i>lihat</a></td>
-                </tr>
+                    <?php 
+                    // $sql = "SELECT * FROM complaint_tbl ";
+                    $technician_id = $_SESSION['id'];
+                    $sql = "SELECT id, technician_id, name, role, jenis_complaint, no_bilik FROM users, complaint_tbl WHERE users.userId=complaint_tbl.complainer_id AND technician_id=$technician_id";
+                    $exec = mysqli_query($conn, $sql);
+
+                    if ($exec) {
+                        $chek_data = mysqli_num_rows($exec);
+
+                        if ($chek_data == 0) {
+                            // echo "<h4>Tiada Data</h4>";
+                        } else {
+
+                            while ($row = mysqli_fetch_assoc($exec)) {
+                                
+                                $id = $row['id'];
+                                $jenis_complaint = $row['jenis_complaint'];
+
+                                echo "<tr>";
+                                echo "<td>{$id}</td>";
+                                echo "<td>{$jenis_complaint}</td>";
+                                echo "<td>pending</td>";
+                                echo "<td><a href=\"complaint_detail.php?id={$id}\"><i class=\"fas fa-pencil fa-2x\"></i>lihat</a></td>";
+                                echo "</tr>";
+                            }
+                        
+                        }
+                    } else {
+                        die(mysqli_error($conn));
+                    }
+                    
+                     
+                    ?>
+                
                 </tbody>
             </table>
 
         </div>
-        <div class="w3-container w3-cell" style="width: 200px;">
-
-            <ul class="w3-ul">
-                <li><a href="#"><img
-                            src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
-                            width="30px" height="30px" alt="">Maklum Balas</a></li>
-                <li><a href="#"><img src="https://static.thenounproject.com/png/461886-200.png" alt="" width="30px"
-                                     height="30px">Manual</a></li>
-            </ul>
-
-        </div>
+    
     </div>
 
 
@@ -102,7 +110,24 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
 
 
 </body>
-
-
+<script src="js/jquery.min.js"></script>
+<script src="js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.flash.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script>
+    $(document).ready( function () {
+            $('#myTable').DataTable({
+                dom: 'lfrtipB',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        } );
+</script>
 
 </html>

@@ -150,7 +150,7 @@ if (isset($_POST['send'])) {
                 <tr>
                     <td colspan="2">
                         <form action="" method="post">
-                        <input type="text" class="w3-input w3-border" placeholder="Mesej" name="mesej">
+                        <input type="text" class="w3-input w3-border" placeholder="Mesej" name="mesej" required>
                         <input type="submit" class="w3-button w3-light-gray" value="Hantar" name="send">
                         </form>
                     </td>
@@ -161,9 +161,7 @@ if (isset($_POST['send'])) {
         <div class="w3-container w3-cell" style="width: 200px;">
 
             <ul class="w3-ul">
-                <li><a href="#"><img
-                            src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
-                            width="30px" height="30px" alt="">Edit</a></li>
+                <li><a href="#"><img src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png" width="30px" height="30px" alt="">Edit</a></li>
                 
             </ul>
 

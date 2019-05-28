@@ -8,6 +8,10 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
   header('Location: index.php');
 }
 
+include "include/db.php";
+if (isset($_GET['id'])) {
+    $complaint_id = $_GET['id'];
+}
 
 
 ?>
@@ -45,39 +49,97 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
     <div class="w3-cell-row">
 
         <div class="w3-container w3-cell">
+            <a href="complaint_list.php" class="w3-button w3-light-gray w3-border">< Back</a><br><br>
+            <?php 
+
+            $sql = "SELECT id, name, matricNum, role, faculty, phoneNum, jenis_complaint, detail, no_bilik, tarikh, masa FROM users, complaint_tbl WHERE users.userId = complaint_tbl.complainer_id AND id=$complaint_id";
+
+
+            $query = mysqli_query($conn, $sql);
+            if ($query) {
+                
+                while ($row = mysqli_fetch_assoc($query)) {
+                    
+                    // Student info
+                    $complaint_id = $row['id'];
+                    $name = $row['name'];
+                    $matric_number = $row['matricNum'];
+                    $jawatan = $row['role'];
+                    $faculty = $row['faculty'];
+                    $phone_num = $row['phoneNum'];
+
+                    // complaint data
+                    $jenis_complaint = $row['jenis_complaint'];
+                    $detail = $row['detail'];
+                    $no_bilik = $row['no_bilik'];
+                    $tarikh = $row['tarikh'];
+                    $masa = $row['masa'];
+
+                }
+            }
+
+            if (isset($_POST['send'])) {
+                $mesej = $_POST['mesej'];
+
+                $sql = "INSERT INTO message_tbl(complaint_id, mesej) VALUES($complaint_id, '$mesej')";
+                if (mysqli_query($conn, $sql)) {
+                    header("Location: complaint_detail.php?id=$complaint_id");
+                } else {
+                    die(mysqli_error($conn));
+                }
+            }
+
+             ?>
 
 
             <table class="w3-table w3-border">
                 <tbody>
                 <tr>
                     <th>Nama: </th>
-                    <td width="50%">Manisha Sritharan</td>
+                    <td><?php echo $name; ?></td>
                     <th>No.ID: </th>
-                    <td>4171002151</td>
+                    <td><?php echo $matric_number; ?></td>
                 </tr>
                 <tr>
                     <th>Jawatan: </th>
-                    <td>Student</td>
+                    <td><?php echo $jawatan ?></td>
                     <th>Pejabat/Jabatan/Fakulti: </th>
-                    <td>FASBIO</td>
+                    <td><?php echo $faculty ?></td>
                 </tr>
                 <tr>
                     <th>No.Telefon: </th>
-                    <td>018-2560441</td>
+                    <td><?php echo $phone_num ?></td>
                     <th>No.Telefon(Pejabat): </th>
                     <td>-</td>
                 </tr>
                 <tr>
                     <th>Aduan Kerosakan: </th>
-                    <td colspan="3">Elektrikal</td>
+                    <td colspan="3"><?php echo $jenis_complaint ?></td>
                 </tr>
                 <tr>
                     <th>Masalah/Ulasan: </th>
-                    <td colspan="3">Sinki pecah di kedua-dua bilik mandi. Tidak ada handle unutk almari. Tidak ada penutup di mangkuk tandas. Ada fungi di dinding bilik.</td>
+                    <td colspan="3"><?php echo $detail ?></td>
                 </tr>
                 <tr>
                 <th>Gambar: </th>
-                <td colspan="3"><img src="../images/1.jpg" alt="" width="100px" height="100px" class="w3-hover-opacity"><img src="../images/1.jpg" alt="" width="100px" height="100px" class="w3-hover-opacity"></td>
+                <td colspan="3">
+                <?php 
+
+
+                $img_query = "SELECT * FROM upload_img WHERE complaint_id=$complaint_id";
+                $img_exec  = mysqli_query($conn, $img_query);
+
+                if ($img_exec) {
+                    while ($row = mysqli_fetch_assoc($img_exec)) {
+                        $img_id = $row['id'];
+                        $img_name = $row['img_name'];
+
+                        echo "<a href=\"../photo/{$img_name}\"><img src=\"../photo/{$img_name}\" alt=\"\" width=\"100px\" height=\"100px\" class=\"w3-hover-opacity\"></a>";
+                    }
+                }
+
+                 ?>
+                </td>
                 </tr>
             </tbody>
             </table>
@@ -86,14 +148,14 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
                 <tbody>
                 <tr>
                     <th>Bangunan: </th>
-                    <td>F1-GF-U4</td>
+                    <td><?php echo $no_bilik ?></td>
                     <th>Tarikh Temuduga: </th>
-                    <td>22/4/19</td>
+                    <td><?php echo $tarikh ?></td>
                 </tr>
                 <tr>
                     <th>Masa: </th>
-                    <td>9.00 am-10.00 am</td>
-                    <th>Keutamaam: </th>
+                    <td><?php echo $masa ?></td>
+                    <th>Keutamaan: </th>
                     <td>Segera</td>
                 </tr>
                 <tr>
@@ -109,19 +171,27 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'technician'){
             <br>
             <table class="w3-table w3-border">
                 <tbody>
-                <tr>
-                    <th>user: </th>
-                    <td>Barang tidak mencukupi</td>
-                </tr>
-                <tr>
-                    <th>user: </th>
-                    <td>Baik</td>
-                </tr>
+                <?php 
+
+                    $sql = "SELECT * FROM message_tbl WHERE complaint_id=$complaint_id";
+                    $ext = mysqli_query($conn, $sql);
+
+                    if ($ext) {
+                        while ($row = mysqli_fetch_assoc($ext)) {
+                            $mesej = $row['mesej'];
+
+                            echo "<tr>";
+                            echo "<th width=\"20%\">user: </th>";       
+                            echo "<td>{$mesej}</td>";
+                            echo "</tr>";
+                        }
+                    }
+                     ?>
                 <tr>
                     <td colspan="2">
                         <form action="" method="post">
-                        <input type="text" class="w3-input w3-border" placeholder="Mesej">
-                        <input type="submit" class="w3-button w3-light-gray" value="Hantar">
+                        <input type="text" class="w3-input w3-border" placeholder="Mesej" name="mesej" required>
+                        <input type="submit" class="w3-button w3-light-gray" value="Hantar" name="send">
                         </form>
                     </td>
                 </tr>
