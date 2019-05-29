@@ -46,14 +46,12 @@ include "include/db.php";
                 <thead>
                 <tr>
                     <th>No.</th>
-                    <th>Nama Pengadu</th>
-                    <th>Technician</th>
-                    <th>No Bilik</th>
-                    <th>Jenis Aduan</th>
-                    <th>Detail</th>
-                    <th>Tarikh Temuduga</th>
-                    <th>Masa Temuduga</th>
-                    <th>Status</th>
+                    <th>Jawatan</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>No ID</th>
+                    <th>No Telefon</th>
+                    <th>Faculty</th>
                     <th>Lihat</th>
                 </tr>
                 </thead>
@@ -61,56 +59,28 @@ include "include/db.php";
                     <?php 
 
 
-                    $sql = "SELECT * FROM complaint_tbl";
+                    $sql = "SELECT * FROM users";
                     $query = mysqli_query($conn, $sql); 
 
                     if ($query) {
                         while ($row = mysqli_fetch_assoc($query)) {
-                            $id = $row['id'];
-                            $id_pengadu = $row['complainer_id'];
-                            $id_technician = $row['technician_id'];
-                            $no_bilik = $row['no_bilik'];
-                            $jenis_aduan = $row['jenis_complaint'];
-                            $detail = substr($row['detail'], 0, 10)."...";
-                            $tarikh_temuduga = $row['tarikh'];
-                            $masa = $row['masa'];
-                            $status = $row['status'];
+                            $id = $row['userId'];
+                            $jawatan = $row['role'];
+                            $nama = $row['name'];
+                            $email = $row['email'];
+                            $no_id = $row['matricNum'];
+                            $no_telefon = $row['phoneNum'];
+                            $fakulti = $row['faculty'];
+
 
                             echo "<tr>";
-                            echo "<td>{$id}</td>";
-
-                            // check pengadu is exist or not
-                            if (empty($id_pengadu)) {
-                                echo "<td>Tiada ID/Nama</td>";
-                            } else {
-                                $complainer_sql = mysqli_query($conn, "SELECT name FROM users WHERE userId = $id_pengadu");
-                                if ($complainer_sql) {
-
-                                    while ($row = mysqli_fetch_assoc($complainer_sql)) {
-                                        $nama_pengadu = $row['name'];
-                                        echo "<td>{$nama_pengadu}</td>";
-                                    }
-                                    
-                                }
-                            }
-                            if (empty($id_technician)) {
-                               echo "<td>Belum Disetkan</td>";
-                            } else {
-                                $technician_sql = mysqli_query($conn, "SELECT * FROM technician WHERE id=$id_technician");
-                                if ($technician_sql) {
-                                    while ($row = mysqli_fetch_assoc($technician_sql)) {
-                                        $nama_technician = $row['name'];
-                                        echo "<td>{$nama_technician}</td>";
-                                    }
-                                }
-                            }
-                            
-                            echo "<td>{$no_bilik}</td>";
-                            echo "<td>{$jenis_aduan}</td>";
-                            echo "<td>{$detail}</td>";
-                            echo "<td>{$tarikh_temuduga}</td>";
-                            echo "<td>{$masa}</td>";
-                            echo "<td>{$status}</td>";
+                            echo "<td>{$id}</td>";                          
+                            echo "<td>{$jawatan}</td>";
+                            echo "<td>{$nama}</td>";
+                            echo "<td>{$email}</td>";
+                            echo "<td>{$no_id}</td>";
+                            echo "<td>{$no_telefon}</td>";
+                            echo "<td>{$fakulti}</td>";
                             echo "<td><a href=\"complaint_detail.php?id={$id}\" class=\"w3-button w3-light-gray w3-border\">Lihat</a></td>";
                             echo "</tr>";
                         }

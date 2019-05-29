@@ -8,7 +8,7 @@ if (isset($_POST['nama'])) {
 	$emel = $_POST['email'];
 	$maklumBalas = $_POST['maklumbalas'];
 
-	$sql = "INSERT INTO feedback(nama, emel, maklumbalas) ";
+	$sql = "INSERT INTO feedback_tbl(nama, email, maklumbalas) ";
 	$sql.= "VALUES('$nama', '$emel', '$maklumBalas')";
 
 	if (mysqli_query($conn, $sql)) {

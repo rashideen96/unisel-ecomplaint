@@ -2,13 +2,13 @@
 
 session_start();
 
-// if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
+if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
 
-// } else{
-//   header('Location: index.php');
-// }
+} else{
+  header('Location: index.php');
+}
 
-
+include "include/db.php";
 
 ?>
 
@@ -21,6 +21,7 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dataTables.min.css">
     <title>Feedback</title>
 </head>
 
@@ -42,6 +43,7 @@ session_start();
 
             <table class="w3-table w3-table-all w3-bordered" id="myTable">
                 <thead>
+
                 <tr>
                     <th>No.</th>
                     <th>Nama</th>
@@ -50,12 +52,28 @@ session_start();
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>23</td>
-                    <td>Amirul</td>
-                    <td>mirul@gmail.com</td>
-                    <td>Selamat datang ke unisel ecomplaint</td>
-                </tr>
+                <?php 
+
+                    $sql = "SELECT * FROM feedback_tbl ORDER BY id DESC";
+                    $query = mysqli_query($conn, $sql);
+                    if ($query) {
+                        while ($row = mysqli_fetch_assoc($query)) {
+                            $id = $row['id'];
+                            $nama = $row['nama'];
+                            $email = $row['email'];
+                            $maklumbalas = $row['maklumbalas'];
+
+                            echo "<tr>";
+                            echo "<td>{$id}</td>";
+                            echo "<td>{$nama}</td>";
+                            echo "<td>{$email}</td>";
+                            echo "<td>{$maklumbalas}</td>";
+                            echo "</tr>";
+                        }
+
+                    }
+                 ?>
+                
                 </tbody>
             </table>
 
@@ -80,7 +98,17 @@ session_start();
 
 
 </body>
-
-
+<script src="js/jquery.min.js"></script>
+<script src="js/dataTables.min.js"></script>
+<script>
+    $(document).ready( function () {
+            $('#myTable').DataTable({
+                dom: 'lfrtipB',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        } );
+</script>
 
 </html>

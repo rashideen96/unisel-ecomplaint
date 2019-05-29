@@ -67,7 +67,7 @@ if (isset($_POST['send'])) {
 
         <div class="w3-container w3-cell">
 
-        	<a href="status_complaint.php" class="w3-button">< Back</a><br><br>
+        	<a href="status_complaint.php" class="w3-button w3-border w3-light-gray">< Back</a><br><br>
         	<?php 
 
         	if ($ext) {
@@ -86,6 +86,7 @@ if (isset($_POST['send'])) {
 						$detail = $row['detail'];
 						$tarikh = $row['tarikh'];
 						$masa = $row['masa'];
+                        $status = $row['status'];
 						?>
 						<table class="w3-table w3-border">
 			                <tbody>
@@ -99,7 +100,17 @@ if (isset($_POST['send'])) {
 			                    	<th>Jenis Complaint</th>
 			                    	<td><?php echo $jenis_complaint ?></td>
 			                    	<th>Status</th>
-			                    	<td class="w3-red">pending</td>
+                                    <?php 
+                                    if ($status == 'Pending') {
+                                        echo "<td class=\"w3-red\">{$status}</td>";
+                                    } elseif($status == 'KIV'){
+                                        echo "<td class=\"w3-blue\">{$status}</td>";
+                                    } else {
+                                        echo "<td class=\"w3-green\">{$status}</td>";
+                                    }
+
+                                     ?>
+			                    	
 			                    </tr>
 			                    <tr>
 			                    	<th>Detail</th>

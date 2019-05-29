@@ -5,20 +5,20 @@ include 'include/db.php';
 
 $msg = '';
 if (isset($_POST['login'])){
-    $staff_id = mysqli_real_escape_string($conn, trim($_POST['t_id']));
+    $admin_id = mysqli_real_escape_string($conn, trim($_POST['t_id']));
     $password = mysqli_real_escape_string($conn, trim($_POST['password']));
 
-    $query = mysqli_query($conn, "SELECT * FROM admin WHERE admin_id='$staff_id' AND password='$password'");
+    $query = mysqli_query($conn, "SELECT * FROM admin WHERE admin_id='$admin_id' AND password='$password'");
     $count_user = mysqli_num_rows($query);
 
     if ($count_user == 0){
         $msg = "Incorrect username or password!";
     } else {
-        $query = mysqli_query($conn, "SELECT * FROM admin WHERE admin_id='$staff_id' AND password='$password'");
+        $query = mysqli_query($conn, "SELECT * FROM admin WHERE admin_id='$admin_id' AND password='$password'");
         while ($row = mysqli_fetch_assoc($query)){
             $_SESSION['id'] = $row['id'];
             $_SESSION['role'] = $row['role'];
-            $_SESSION['staff_id'] = $row['staff_id'];
+            $_SESSION['admin_id'] = $row['admin_id'];
 
             header('Location:dashboard.php');
         }

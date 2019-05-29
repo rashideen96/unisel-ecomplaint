@@ -57,15 +57,18 @@ include "include/db.php";
                     <?php 
 
                     $complainer_id = $_SESSION['id'];
-                    $sql = "SELECT id, jenis_complaint FROM complaint_tbl WHERE complainer_id = $complainer_id";
+                    $sql = "SELECT id, jenis_complaint, status FROM complaint_tbl WHERE complainer_id = $complainer_id";
                     $run_query = mysqli_query($conn, $sql);
 
                     while ($row = mysqli_fetch_assoc($run_query)) {
+                        $id = $row['id'];
+                        $jenis_complaint = $row['jenis_complaint'];
+                        $status_complaint = $row['status'];
                         
                         echo "<tr>";
-                        echo "<td>{$row['id']}</td>";
-                        echo "<td>{$row['jenis_complaint']}</td>";
-                        echo "<td><a class=\"color\" href=\"view_complaint.php?id={$row['id']}\">pending</a></td>";
+                        echo "<td>{$id}</td>";
+                        echo "<td>{$jenis_complaint}</td>";
+                        echo "<td><a class=\"color\" href=\"view_complaint.php?id={$row['id']}\">{$status_complaint}</a></td>";
                         echo "</tr>";
                     }
                      ?>

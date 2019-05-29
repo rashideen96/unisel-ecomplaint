@@ -2,11 +2,11 @@
 
 session_start();
 
-// if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
+if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
 
-// } else{
-//   header('Location: index.php');
-// }
+} else{
+  header('Location: index.php');
+}
 
 
 
