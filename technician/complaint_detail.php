@@ -52,7 +52,7 @@ if (isset($_GET['id'])) {
             <a href="complaint_list.php" class="w3-button w3-light-gray w3-border">< Back</a><br><br>
             <?php 
 
-            $sql = "SELECT id, name, matricNum, role, faculty, phoneNum, jenis_complaint, detail, no_bilik, tarikh, masa FROM users, complaint_tbl WHERE users.userId = complaint_tbl.complainer_id AND id=$complaint_id";
+            $sql = "SELECT id, name, matricNum, role, faculty, phoneNum, jenis_complaint, detail, no_bilik, tarikh, masa, status FROM users, complaint_tbl WHERE users.userId = complaint_tbl.complainer_id AND id=$complaint_id";
 
 
             $query = mysqli_query($conn, $sql);
@@ -74,6 +74,7 @@ if (isset($_GET['id'])) {
                     $no_bilik = $row['no_bilik'];
                     $tarikh = $row['tarikh'];
                     $masa = $row['masa'];
+                    $status = $row['status'];
 
                 }
             }
@@ -91,7 +92,9 @@ if (isset($_GET['id'])) {
 
              ?>
 
-
+             <div id="print">
+                 
+             
             <table class="w3-table w3-border">
                 <tbody>
                 <tr>
@@ -160,10 +163,11 @@ if (isset($_GET['id'])) {
                 </tr>
                 <tr>
                     <th>Status: </th>
-                    <td colspan="3"><select name="status" id="" class="w3-input">
-                            <option value="kiv">KIV</option>
-                            <option value="pending">Pending</option>
-                            <option value="closed">Closed</option>
+                    <td colspan="3"><select name="status" id="status" class="w3-input">
+                            <?php echo "<option value=\"{$status}\">{$status}</option>" ?>
+                            <option value="KIV">KIV</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Closed">Closed</option>
                         </select></td>
                 </tr>
                 </tbody>
@@ -197,16 +201,13 @@ if (isset($_GET['id'])) {
                 </tr>
                 </tbody>
             </table>
-
+        </div>
         </div>
         <div class="w3-container w3-cell" style="width: 200px;">
 
             <ul class="w3-ul">
-                <li><a href="#"><img
-                            src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
-                            width="30px" height="30px" alt="">Maklum Balas</a></li>
-                <li><a href="#"><img src="https://static.thenounproject.com/png/461886-200.png" alt="" width="30px"
-                                     height="30px">Manual</a></li>
+                <li><img id="cetak" src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png" width="30px" height="30px" alt="">Cetak
+                </li>
             </ul>
 
         </div>
@@ -226,9 +227,27 @@ if (isset($_GET['id'])) {
 
 
 </body>
+<script src="js/jquery.min.js"></script>
+<script src="js/printThis.js"></script>
+<script>
+    $('#status').on('change', function(){
 
-<style>
+        var data = $(this).val();
+        console.log(data);
+        window.location.href = "update_status.php?id=<?php echo $complaint_id ?>&status="+data;
+    });
 
-</style>
+    $('#cetak').on('click', function(e){
+        // e.preventDefault();
+        // window.print();
+        //$('#print').printThis();
+        $('#print').printThis({
+            importCSS: false,
+            loadCSS: "css/w3.css",
+            header: "<h1>Print</h1>"
+        });
+    });
+    
+</script>
 
 </html>

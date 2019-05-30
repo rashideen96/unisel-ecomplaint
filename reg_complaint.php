@@ -170,9 +170,7 @@ if (isset($_POST['daftar'])) {
         <div class="w3-container w3-cell" style="width: 200px;">
 
             <ul class="w3-ul">
-                <li><a href="#"><img
-                            src="https://cdn1.iconfinder.com/data/icons/seo-internet-marketing-4-3/64/x-01-2-512.png"
-                            width="30px" height="30px" alt="">Maklum Balas</a></li>
+                
                 <li><a href="#"><img src="https://static.thenounproject.com/png/461886-200.png" alt="" width="30px"
                                      height="30px">Manual</a></li>
             </ul>
@@ -217,39 +215,41 @@ if (isset($_POST['daftar'])) {
             }
         });
 
-
-
-    });
-    $('#from').timepicker({
+        $('#from').timepicker({
         'minTime': '9:00am',
         'maxTime': '5:00pm',
         'showDuration': false
-    });
-
-    $('#to').timepicker({
-        'minTime': '9:00am',
-        'maxTime': '5:00pm',
-        'showDuration': false
-    });
-
-    $('#datepicker').on('focusout', function(){
-        // $('#check_date').text('triggered');
-        var date = $(this).val();
-        $.ajax({
-            url: "processCheckDate.php",
-            method: "POST",
-            data: {date:date},
-            success: function(data){
-                // $('#mesej').html(data);
-                // $('#check_date').text('triggered');
-                $('#check_date').text(data);
-                // alert(data);
-            },
-            error: function() {
-                alert('error handling here');
-            }
         });
+
+        $('#to').timepicker({
+            'minTime': '9:00am',
+            'maxTime': '5:00pm',
+            'showDuration': false
+        });
+
+
+
     });
+    
+
+    // $('#datepicker').on('focusout', function(){
+    //     // $('#check_date').text('triggered');
+    //     var date = $(this).val();
+    //     $.ajax({
+    //         url: "processCheckDate.php",
+    //         method: "POST",
+    //         data: {date:date},
+    //         success: function(data){
+    //             // $('#mesej').html(data);
+    //             // $('#check_date').text('triggered');
+    //             $('#check_date').text(data);
+    //             // alert(data);
+    //         },
+    //         error: function() {
+    //             alert('error handling here');
+    //         }
+    //     });
+    // });
 
     
 

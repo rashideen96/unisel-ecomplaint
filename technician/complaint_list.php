@@ -62,7 +62,7 @@ include "include/db.php";
                     <?php 
                     // $sql = "SELECT * FROM complaint_tbl ";
                     $technician_id = $_SESSION['id'];
-                    $sql = "SELECT id, technician_id, name, role, jenis_complaint, no_bilik FROM users, complaint_tbl WHERE users.userId=complaint_tbl.complainer_id AND technician_id=$technician_id";
+                    $sql = "SELECT id, technician_id, name, role, jenis_complaint, no_bilik, status FROM users, complaint_tbl WHERE users.userId=complaint_tbl.complainer_id AND technician_id=$technician_id";
                     $exec = mysqli_query($conn, $sql);
 
                     if ($exec) {
@@ -76,12 +76,20 @@ include "include/db.php";
                                 
                                 $id = $row['id'];
                                 $jenis_complaint = $row['jenis_complaint'];
+                                $status = $row['status'];
 
                                 echo "<tr>";
                                 echo "<td>{$id}</td>";
                                 echo "<td>{$jenis_complaint}</td>";
-                                echo "<td>pending</td>";
-                                echo "<td><a href=\"complaint_detail.php?id={$id}\"><i class=\"fas fa-pencil fa-2x\"></i>lihat</a></td>";
+                                if ($status == 'Pending') {
+                                    echo "<td class=\"w3-red\">{$status}</td>";
+                                } elseif($status == 'KIV'){
+                                    echo "<td class=\"w3-blue\">{$status}</td>";
+                                } else {
+                                    echo "<td class=\"w3-green\">{$status}</td>";
+                                }
+                                
+                                echo "<td><a class=\"w3-button w3-light-gray w3-border\" href=\"complaint_detail.php?id={$id}\">lihat</a></td>";
                                 echo "</tr>";
                             }
                         
