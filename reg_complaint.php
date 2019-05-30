@@ -147,7 +147,7 @@ if (isset($_POST['daftar'])) {
                 </tr>
                 <tr>
                     <th>Date / Tarikh penyelenggaraan</th>
-                    <td><input type="text" name="tarikh" id="datepicker" class="w3-input w3-border" autocomplete="off"></td>
+                    <td><input type="text" name="tarikh" id="datepicker" class="w3-input w3-border" autocomplete="off" readonly><span id="check_date"></span></td>
                 </tr>
                 <tr>
                     <th>Available time / Waktu penyelenggaraan</th>
@@ -158,7 +158,7 @@ if (isset($_POST['daftar'])) {
                 </tr>
                 <tr>
                     <th colspan="2" class="w3-center"><input type="submit" name="daftar"
-                                                             class="w3-button w3-light-grey" value="Daftar">
+                                                             class="w3-button w3-light-grey" id="daftar" value="Daftar">
                         <input type="reset" name="reset" class="w3-button w3-light-grey" value="Batal"></th>
 
                 </tr>
@@ -192,9 +192,32 @@ if (isset($_POST['daftar'])) {
 <script>
 
     $(document).ready(function () {
+        var dateToday = new Date(); 
         $( "#datepicker" ).datepicker({
-            dateFormat: 'dd/mm/yy'
+            dateFormat: 'dd/mm/yy',
+            minDate: dateToday,
+            showButtonPanel: true,
+            onClose: function(){
+                // alert($(this).val());
+                var date = $(this).val();
+                $.ajax({
+                    url: "processCheckDate.php",
+                    method: "POST",
+                    data: {date:date},
+                    success: function(data){
+                        // $('#mesej').html(data);
+                        // $('#check_date').text('triggered');
+                        $('#check_date').html(data);
+                        // alert(data);
+                    },
+                    error: function() {
+                        alert('error handling here');
+                    }
+                });
+            }
         });
+
+
 
     });
     $('#from').timepicker({
@@ -208,6 +231,27 @@ if (isset($_POST['daftar'])) {
         'maxTime': '5:00pm',
         'showDuration': false
     });
+
+    $('#datepicker').on('focusout', function(){
+        // $('#check_date').text('triggered');
+        var date = $(this).val();
+        $.ajax({
+            url: "processCheckDate.php",
+            method: "POST",
+            data: {date:date},
+            success: function(data){
+                // $('#mesej').html(data);
+                // $('#check_date').text('triggered');
+                $('#check_date').text(data);
+                // alert(data);
+            },
+            error: function() {
+                alert('error handling here');
+            }
+        });
+    });
+
+    
 
 </script>
 </html>
