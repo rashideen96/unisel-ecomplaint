@@ -1,10 +1,14 @@
 <?php
+ob_start();
 session_start();
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
 
-} else{
-  header('Location: login.php');
-}
+if (!isset($_SESSION['user'])) header('Location: login.php');
+elseif (!$_SESSION['student']) header('Location: login.php');
+// if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
+
+// } else{
+//   header('Location: login.php');
+// }
 
 
 
@@ -18,19 +22,29 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/w3.css">
+    <!-- <link rel="stylesheet" href="css/w3.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
+    <style type="text/css">
+        .img_preview {
+            height: 200px;
+            width: 200px;
+        }
+    </style>
     <title>Dashboard</title>
 </head>
 <body>
 
-<div class="w3-center">
+<!-- <div class="w3-center">
     <img src="http://tahfizselangor.unisel.edu.my/unisel.png" alt="Universiti Selangor" class="top-logo">
     <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="top-logo">
 </div>
-<br>
-<div class="w3-container">
+<br> -->
+<!-- <div class="w3-container">
     <div class="w3-bar w3-light-grey w3-border w3-card-2">
         <a href="dashboard.php" class="w3-bar-item w3-button w3-border-right w3-gray">Home</a>
         <a href="reg_complaint.php" class="w3-bar-item w3-button w3-border-right">Register Complaint</a>
@@ -40,17 +54,20 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
     </div>
     <br>
 
-</div>
-<div class="w3-container">
-    <div class="w3-cell-row">
+</div> -->
+<?php include('include/nav2.php'); ?>
+<br>
+<br>
+<div class="container">
+    <div class="row">
 
-        <div class="w3-container w3-cell">
+        <div class="col-lg-4">
 
 
             <h2>Selamat datang ke unisel ecomplaint</h2>
 
         </div>
-        <div class="w3-container w3-cell" style="width: 200px;">
+        <div class="col-lg-8">
 
             <ul class="w3-ul">
                 <li><a href="#"><img
@@ -65,9 +82,10 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'
 
 
     <br>
-    <?php require_once "include/footer.php"; ?>
+    
 
 </div>
+<?php require_once "include/footer.php"; ?>
 </body>
 
 </html>

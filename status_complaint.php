@@ -1,12 +1,18 @@
 <?php
+ob_start();
 session_start();
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
 
-} else{
-    header('Location: login.php');
-}
 
 include "include/db.php";
+if (!isset($_SESSION['user'])) header('Location: login.php');
+elseif (!$_SESSION['student']) header('Location: login.php');
+// if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
+
+// } else{
+//     header('Location: login.php');
+// }
+
+
 
 ?>
 
@@ -17,59 +23,62 @@ include "include/db.php";
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/w3.css">
+    <!-- <link rel="stylesheet" href="css/w3.css">
+    <link rel="stylesheet" href="css/style.css"> -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
     <link rel="stylesheet" href="css/dataTables.min.css">
+    <style type="text/css">
+        .img_preview {
+            height: 200px;
+            width: 200px;
+        }
+    </style>
 
     <title>Status Complaint</title>
 </head>
 <body>
-<div class="w3-center">
-    <img src="http://tahfizselangor.unisel.edu.my/unisel.png" alt="Universiti Selangor" class="top-logo">
-    <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="top-logo">
-</div>
+<?php include('include/nav2.php'); ?>
 <br>
-<div class="w3-container">
-    <div class="w3-bar w3-light-grey w3-border w3-card-2">
-        <a href="dashboard.php" class="w3-bar-item w3-button w3-border-right">Home</a>
-        <a href="reg_complaint.php" class="w3-bar-item w3-button w3-border-right">Register Complaint</a>
-        <a href="status_complaint.php" class="w3-bar-item w3-button w3-border-right w3-gray">Status Complaint</a>
-        <a href="help1.php" class="w3-bar-item w3-button w3-border-right">Bantuan</a>
-        <a href="logout.php" class="w3-bar-item w3-button w3-right w3-border-left">Logout</a>
-    </div>
-    <br>
+<br>
+<div class="container">
+    <div class="row">
 
-</div>
-<div class="w3-container">
-    <div class="w3-cell-row">
-
-        <div class="w3-container w3-cell">
-
-            <table class="w3-table w3-bordered" id="myTable">
+        <div class="col-lg-4">
+            <h2>Status Complaint</h2>
+        </div>
+        <div class="col-lg-8">
+            
+            <h2 id="compId"></h2>
+            <table class="table table-bordered table-hovered" id="myTable">
                 <thead>
                 <tr>
                     <th>No.</th>
                     <th>Complaint Type</th>
                     <th>Status</th>
+                    <th>View</th>
                 </tr>
                 </thead>
                 <tbody>
                     <?php 
 
-                    $complainer_id = $_SESSION['id'];
-                    $sql = "SELECT id, jenis_complaint, status FROM complaint_tbl WHERE complainer_id = $complainer_id";
-                    $run_query = mysqli_query($conn, $sql);
+                    // print_r($_SESSION['user']);
 
-                    while ($row = mysqli_fetch_assoc($run_query)) {
-                        $id = $row['id'];
-                        $jenis_complaint = $row['jenis_complaint'];
-                        $status_complaint = $row['status'];
-                        
-                        echo "<tr>";
-                        echo "<td>{$id}</td>";
-                        echo "<td>{$jenis_complaint}</td>";
-                        echo "<td><a class=\"color\" href=\"view_complaint.php?id={$row['id']}\">{$status_complaint}</a></td>";
-                        echo "</tr>";
+                    $complainer_id = $_SESSION['user']['userId'];
+                    $run_query = $conn->query("SELECT id, jenis_complaint, status FROM complaint_tbl WHERE complainer_id = $complainer_id");
+
+                    while ($db_row = $run_query->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?= $db_row['id'] ?></td>
+                            <td><?= $db_row['jenis_complaint']; ?></td>
+                            <td><?= $db_row['status']; ?></td>
+                            <td><a href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td>
+                        </tr>
+
+                        <?php
                     }
                      ?>
                 
@@ -81,17 +90,32 @@ include "include/db.php";
 
 
     <br>
-    <?php require_once "include/footer.php"; ?>
+    
 
 </div>
+<?php require_once "include/footer.php"; ?>
 </body>
 <script src="js/jquery.min.js"></script>
 <script src="js/dataTables.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function (){
         $(document).ready( function () {
             $('#myTable').DataTable();
-        } );
+        });
+
+        // $.ajax({
+        //     url: "ajax/status_complaint.php",
+        //     method: "POST",
+        //     data: 6,
+        //     success: function(data) {
+        //         console.log(data);
+        //         // $('#compId').innerHTML = data;
+        //     },
+        //     error: function(err) {
+        //         console.log(err);
+        //     }
+        // })
     });
 </script>
 <style>

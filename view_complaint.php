@@ -1,22 +1,35 @@
 <?php
+ob_start();
 session_start();
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
-
-} else{
-    header('Location: login.php');
-}
 
 include "include/db.php";
 
-$complainer_id = $_SESSION['id'];
-if (isset($_GET['id'])) {
-	$complaint_id = $_GET['id'];
+// if (!isset($_SESSION['id']) && $_SESSION['role'] !== 'student' || $_SESSION['role'] !== 'staff') {
+//     header('Location: login.php');
+// }
 
-	$sql = "SELECT * FROM complaint_tbl WHERE id=$complaint_id AND complainer_id=$complainer_id LIMIT 1";
-	$ext = mysqli_query($conn, $sql);
+if (!isset($_SESSION['id'])) header('Location: login.php');
+elseif (!$_SESSION['role'] == 'student' || !$_SESSION['role'] == 'staff') header('Location: login.php');
+
+
+
+
+// $complainer_id = $_SESSION['id'];
+$complainer_id = isset($_SESSION['id']) ? $_SESSION['id'] : '';
+
+$complaint_id = isset($_GET['id']) ? $_GET['id'] : '';
+
+// if (isset($_GET['id'])) {
+// 	$complaint_id = $_GET['id'];
+
+// 	// $sql = "SELECT * FROM complaint_tbl WHERE id=$complaint_id AND complainer_id=$complainer_id LIMIT 1";
+// 	// $ext = mysqli_query($conn, $sql);
+//     if ($conn->query("SELECT * FROM complaint_tbl WHERE id=$complaint_id AND complainer_id=$complainer_id LIMIT 1")) 
 
 	
-}
+// } else {
+//     $complaint_id = '';
+// }
 
 if (isset($_POST['send'])) {
 	$mesej = $_POST['mesej'];
@@ -26,7 +39,9 @@ if (isset($_POST['send'])) {
 		header("Location: view_complaint.php?id=$complaint_id");
 	} else {
 		die(mysqli_error($conn));
+        exit();
 	}
+
 }
 
 
@@ -70,70 +85,50 @@ if (isset($_POST['send'])) {
         	<a href="status_complaint.php" class="w3-button w3-border w3-light-gray">< Back</a><br><br>
         	<?php 
 
-        	if ($ext) {
+            $db_query = $conn->query("SELECT * FROM complaint_tbl WHERE id=$complaint_id AND complainer_id=$complainer_id LIMIT 1");
 
-        		// check row
-        		$chek_data = mysqli_num_rows($ext);
-        		if ($chek_data == 0) {
-        			echo "<h4>Data tidak wujud</h4>";
-        		} else {
-
-        			while ($row = mysqli_fetch_assoc($ext)) {
-					
-						$id = $row['id'];
-						$no_bilik = $row['no_bilik'];
-						$jenis_complaint = $row['jenis_complaint'];
-						$detail = $row['detail'];
-						$tarikh = $row['tarikh'];
-						$masa = $row['masa'];
-                        $status = $row['status'];
-						?>
-						<table class="w3-table w3-border">
-			                <tbody>
-			                    <tr>
-			                    	<th>No.</th>
-			                    	<td><?php echo $id ?></td>
-			                    	<th>No Bilik</th>
-			                    	<td><?php echo $no_bilik ?></td>
-			                    </tr>
-			                    <tr>
-			                    	<th>Jenis Complaint</th>
-			                    	<td><?php echo $jenis_complaint ?></td>
-			                    	<th>Status</th>
+            if ($db_query) {
+                if ($db_query->num_rows == 0) echo "<h4>Data tidak wujud</h4>";
+                else while ($db_row = $db_query->fetch_assoc()) { ?>
+                   
+                    <table class="w3-table w3-border">
+                            <tbody>
+                                <tr>
+                                    <th>No.</th>
+                                    <td><?= $db_row['id'] ?></td>
+                                    <th>No Bilik</th>
+                                    <td><?= $db_row['no_bilik'] ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Jenis Complaint</th>
+                                    <td><?= $db_row['jenis_complaint'] ?></td>
+                                    <th>Status</th>
                                     <?php 
-                                    if ($status == 'Pending') {
-                                        echo "<td class=\"w3-red\">{$status}</td>";
-                                    } elseif($status == 'KIV'){
-                                        echo "<td class=\"w3-blue\">{$status}</td>";
-                                    } else {
-                                        echo "<td class=\"w3-green\">{$status}</td>";
-                                    }
+                                    if ($db_row['status'] == 'Pending') echo "<td class=\"w3-red\">{$db_row['status']}</td>";
+                                    elseif($db_row['status'] == 'KIV') echo "<td class=\"w3-blue\">{$db_row['status']}</td>";
+                                    else echo "<td class=\"w3-green\">{$db_row['status']}</td>";
 
                                      ?>
-			                    	
-			                    </tr>
-			                    <tr>
-			                    	<th>Detail</th>
-			                    	<td colspan="3"><?php echo $detail ?></td>
-			                    </tr>
-			                    <tr>
-			                    	<th>Tarikh</th>
-			                    	<td><?php echo $tarikh ?></td>
-			                    	<th>Masa</th>
-			                    	<td><?php echo $masa ?></td>
-			                    </tr>
-			                </tbody>
-			            </table>
-			            
-						<?php
-					}
-
-        		}
-		
-				
-			} else {
-				die(mysqli_error($conn));
-			}
+                                    
+                                </tr>
+                                <tr>
+                                    <th>Detail</th>
+                                    <td colspan="3"><?= $db_row['detail'] ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Tarikh</th>
+                                    <td><?= $db_row['tarikh'] ?></td>
+                                    <th>Masa</th>
+                                    <td><?= $db_row['masa'] ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                   <?php
+                }
+            } else {
+                die($conn->connect_error);
+                exit();
+            }
 
         	 ?>
 
@@ -142,19 +137,38 @@ if (isset($_POST['send'])) {
                 <tbody>
                 	<?php 
 
-                	$sql = "SELECT * FROM message_tbl WHERE complaint_id=$complaint_id";
-                	$ext = mysqli_query($conn, $sql);
+                    $db_query = "SELECT * 
+                                 FROM message_tbl 
+                                 WHERE complaint_id=$complaint_id";
+                    $db_exec = $conn->query($db_query);             
 
-                	if ($ext) {
-                		while ($row = mysqli_fetch_assoc($ext)) {
-                			$mesej = $row['mesej'];
 
-                			echo "<tr>";
-                			echo "<th width=\"20%\">user: </th>";       
-				            echo "<td>{$mesej}</td>";
-				            echo "</tr>";
-                		}
-                	}
+                    if ($db_exec) {
+                        while ($db_row = $db_exec->fetch_assoc()) {
+                            $mesej = $db_row['mesej'];
+                            ?>
+                            <tr>
+                                <th width="20%">user: </th>
+                                <th><?= $mesej ?></th>
+                            </tr>
+                            <?php
+                            
+                        }
+                    }
+
+                	// $sql = "SELECT * FROM message_tbl WHERE complaint_id=$complaint_id";
+                	// $ext = mysqli_query($conn, $sql);
+
+                // 	if ($ext) {
+                // 		while ($row = mysqli_fetch_assoc($ext)) {
+                // 			$mesej = $row['mesej'];
+
+                // 			echo "<tr>";
+                // 			echo "<th width=\"20%\">user: </th>";       
+				            // echo "<td>{$mesej}</td>";
+				            // echo "</tr>";
+                // 		}
+                // 	}
                 	 ?>
                 
                

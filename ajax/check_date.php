@@ -1,10 +1,10 @@
 <?php 
-include "include/db.php";
+include "../include/db.php";
 if (isset($_POST['date'])) {
 
-	$date = $connection->real_escape_string($_POST['date']);
+	$date = $conn->real_escape_string($_POST['date']);
 	// $date = $_POST['date'];
-	$stmt = $connection->prepare("SELECT tarikh FROM complaint_tbl WHERE tarikh=?");
+	$stmt = $conn->prepare("SELECT tarikh FROM complaint_tbl WHERE tarikh=?");
 	$stmt->bind_param("s", $date);
 
 	$stmt->execute();
