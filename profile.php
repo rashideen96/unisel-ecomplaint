@@ -105,8 +105,8 @@ if ($db_query) {
                 	<input type="text" name="programme" class="form-control form-control-sm rounded-0" value="<?= $programme ?>">
                 </div>
                 <div class="form-group">
-                	<input type="submit" name="update" class="btn btn-primary rounded-0">
-                	<input type="reset" name="reset" class="btn btn-default rounded-0">
+                	<input type="submit" name="update" class="btn btn-primary rounded-0" value="Update">
+        <!--         	<input type="reset" name="reset" class="btn btn-default rounded-0"> -->
                 </div>
             </form>
                 
