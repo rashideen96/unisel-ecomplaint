@@ -1,9 +1,8 @@
 <div id="studForm">
 	
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="text-center">Student Registration / Daftar Pelajar</h2><hr>
-
+        <div class="col-md-6 col-sm-12">
+            <div class="login-form2">
+                <h2 class="text-center">Student</h2><hr>
                 <form action="" method="post" id="formRegisterStudent">
 
                     <div class="form-group row">
@@ -69,9 +68,7 @@
                         <div class="col-sm-2">
                           <input type="submit" name="register" class="btn btn-primary btn-xs rounded-pill" value="Daftar" id="register" >
                         </div>
-                        <div class="col-sm-2">
-                          <input type="reset" class="btn btn-primary btn-xs rounded-pill" value="Batal" id="cancel">
-                        </div>
+                        
                     </div>
                     
                 </form>

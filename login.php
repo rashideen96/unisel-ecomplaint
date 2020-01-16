@@ -78,9 +78,6 @@ if (isset($_POST['loginStaff'])){
             <button class="btn btn-info mb-5" onclick="register();">Register</button>
             
          </div>
-         <div class="login-main-text">
-             <a href="technician">Technician</a><span> <a href="admin">Admin</a></span>
-         </div>
          
       </div>
       <div class="main">
