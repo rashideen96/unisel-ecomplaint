@@ -6,7 +6,21 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
 
 isset($_GET['id']) ? $complaint_id = $_GET['id'] : '';
 
-$sql = "SELECT id, name, matricNum, role, faculty, phoneNum, jenis_complaint, detail, no_bilik, tarikh, masa, status FROM users, complaint_tbl WHERE users.userId = complaint_tbl.complainer_id AND id=$complaint_id";
+$sql = "SELECT 
+        id, 
+        name, 
+        matricNum, 
+        role, faculty, 
+        phoneNum, 
+        jenis_complaint, 
+        detail, 
+        no_bilik, 
+        tarikh, 
+        masa, 
+        status 
+        FROM users, complaint_tbl 
+        WHERE users.userId = complaint_tbl.complainer_id 
+        AND id=$complaint_id";
 
 
 $query = $conn->query($sql);
