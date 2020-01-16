@@ -83,7 +83,9 @@ if (isset($_POST['loginStaff'])){
       <div class="main">
         <div id="studentLogin">
             <div class="col-md-6 col-sm-12">
+                
                 <div class="login-form">
+                    <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="logo"><br><br>
                    <form action="" method="POST">
                     <?= $msg; ?>
                     <h4>Student</h4>
@@ -105,6 +107,7 @@ if (isset($_POST['loginStaff'])){
          <div id="staffLogin">
              <div class="col-md-6 col-sm-12">
                 <div class="login-form">
+                    <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="logo"><br><br>
                    <form action="" method="POST">
                     <?= $msg; ?>
                     <h4>Staff</h4>

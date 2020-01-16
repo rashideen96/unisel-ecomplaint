@@ -2,7 +2,7 @@
 	
         <div class="col-md-6 col-sm-12">
             <div class="login-form2">
-                <h2 class="text-center">Staff</h2><hr>
+                <h2>Staff</h2><hr>
 
                 <form action="" method="post" id="formRegisterStaff">
 

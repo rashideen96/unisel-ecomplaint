@@ -2,7 +2,7 @@
 	
         <div class="col-md-6 col-sm-12">
             <div class="login-form2">
-                <h2 class="text-center">Student</h2><hr>
+                <h2>Student</h2><hr>
                 <form action="" method="post" id="formRegisterStudent">
 
                     <div class="form-group row">
