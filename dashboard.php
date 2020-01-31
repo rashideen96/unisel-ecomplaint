@@ -3,7 +3,8 @@ ob_start();
 session_start();
 include('include/db.php');
 if (!isset($_SESSION['user'])) header('Location: login.php');
-elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.php');
+// elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.php');
+
 // if (isset($_SESSION['id']) && $_SESSION['role'] == 'student' || $_SESSION['role'] == 'staff'){
 
 // } else{
@@ -93,6 +94,11 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
 
 <!DOCTYPE html>
 <html lang="en">
+<style type="text/css">
+    tfoot {
+    display: table-header-group;
+}
+</style>
 
 <head>
 
@@ -140,7 +146,7 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
           <span>Dashboard</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="reg_complaint.php">
+        <a class="nav-link" href="complaint.php">
           <i class="fa fa-fw fa-folder"></i>
           <span>Complaints</span></a>
       </li>
@@ -190,7 +196,7 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
                 </a>
                 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="logout.php" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" href="logout.php">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>
@@ -208,7 +214,7 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a href="complaint.html" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add Complaint</a>
+            <a href="complaint.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add Complaint</a>
           </div>
 
           <!-- Content Row -->
@@ -231,12 +237,32 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
                     <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                       <thead>
                         <tr>
-                          <th>No.</th>
-                          <th>Complaint Type</th>
-                          <th>Status</th>
+                          <th width="100">Image</th>
+                          <th class="dt-filter-text">Technician</th>
+                          <th class="dt-filter-select">Status</th>
+                          <th class="dt-filter-text">Room</th>
+                          <th class="dt-filter-select">Type</th>
+ 
+                          <th>Detail</th>
+                          <th>Available Date</th>
+                          <th>Available Time</th>
                           <th>View</th>
                         </tr>
                       </thead>
+                      <tfoot>
+                          <tr>
+                              <th></th>
+                              <th>Technician</th>
+                              <th>Status</th>
+                              <th>Room</th>
+                              <th>Type</th>
+                              
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                          </tr>
+                      </tfoot>
                       <tbody>
 
                     <?php 
@@ -244,14 +270,31 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
                     // print_r($_SESSION['user']);
 
                     $complainer_id = $_SESSION['user']['userId'];
-                    $run_query = $conn->query("SELECT id, jenis_complaint, status FROM complaint_tbl WHERE complainer_id = $complainer_id");
+                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id");
 
                     while ($db_row = $run_query->fetch_assoc()) { ?>
                         <tr>
-                            <td><?= $db_row['id'] ?></td>
-                            <td><?= $db_row['jenis_complaint']; ?></td>
-                            <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td>
-                            <td><a href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td>
+                            <td><img src="images/<?= $db_row['img1'] ?>" width="100%"></td>
+                            <td><?= $db_row['technician_id'] ?></td>
+                            <td><?= $db_row['status_id']; ?></td>
+                            <td><?= $db_row['room_no']; ?></td>
+                            <td>
+                                <?php 
+
+                                $query = $conn->query("SELECT * FROM complaint_type WHERE id=".$db_row['complaint_type']."");
+                                $row = $query->fetch_assoc();
+                                echo $row['type'];
+
+                                ?>
+                                    
+                                
+                            </td>
+                           
+                            <td><?= $db_row['detail']; ?></td>
+                            <td><?= $db_row['available_date']; ?></td>
+                            <td><?= $db_row['available_time']; ?></td>
+                           <!--  <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td> -->
+                            <td><a class="btn btn-primary btn-sm" href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td>
                         </tr>
 
                         <?php
@@ -268,6 +311,78 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
            
           </div>
 
+          <!-- Request Table -->
+
+          <?php 
+
+          if ($_SESSION['user']['role'] == 'staff') {
+            ?>
+            <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-12 col-lg-12">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Requests Lists</h6>
+                  
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-sm" id="dataTable2" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th class="dt-filter-text">No.</th>
+                          <th class="dt-filter-text">Complaint Type</th>
+                          <th class="dt-filter-select">Status</th>
+                          <th>View</th>
+                        </tr>
+                      </thead>
+                      <tfoot>
+                          <tr>
+                              <th>No.</th>
+                              <th>Complaint Type</th>
+                              <th>Status</th>
+                              <th></th>
+                          </tr>
+                      </tfoot>
+                      <tbody>
+
+                    <?php 
+
+                    // print_r($_SESSION['user']);
+
+                    $complainer_id = $_SESSION['user']['userId'];
+                    $run_query = $conn->query("SELECT id, jenis_complaint, status FROM complaint_tbl WHERE complainer_id = $complainer_id");
+
+                    while ($db_row = $run_query->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?= $db_row['id'] ?></td>
+                            <td><?= $db_row['jenis_complaint']; ?></td>
+                            <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td>
+                            <td><a class="btn btn-primary btn-sm" href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td>
+                        </tr>
+
+                        <?php
+                    }
+                     ?>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+           
+          </div>
+            <?php
+          }
+
+           ?>
+
+          
           
 
         </div>
@@ -297,24 +412,7 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="logout.php">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -337,7 +435,33 @@ elseif (!$_SESSION['student'] || !$_SESSION['staff']) header('Location: login.ph
   <!-- Page level custom scripts -->
   <script src="js/demo/chart-area-demo.js"></script>
   <script src="js/demo/chart-pie-demo.js"></script>
+  <script>
+        // Setup - add a text input to each footer cell
+ // $('#dataTable tfoot th').each( function (i) {
 
+ //    if (i === 3) {
+ //        return
+ //    }
+ //     var title = $(this).text();
+ //         $(this).html( '<input type="text" class="form-control rounded-0 form-control-sm" placeholder="Search '+title+'" />' );
+ //     } );
+
+ //    // DataTable
+ //     var otable = $('#dataTable').DataTable();
+
+ //     // Apply the search
+ //     otable.columns().every( function () {
+     
+ //         var that = this;
+ //         $( 'input', this.footer() ).on( 'keyup change', function () {
+ //             if ( that.search() !== this.value ) {
+ //                 that
+ //                     .search( this.value )
+ //                     .draw();
+ //             }
+ //         } );
+ //     } );
+  </script>
 </body>
 
 </html>
