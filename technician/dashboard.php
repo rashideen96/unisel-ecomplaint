@@ -9,7 +9,11 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
 
 <!DOCTYPE html>
 <html lang="en">
-
+<style type="text/css">
+    tfoot {
+    display: table-header-group;
+}
+</style>
 <head>
 
   <meta charset="utf-8">
@@ -28,6 +32,7 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css">
+  <link type="text/css" rel="stylesheet" href="magiczoomplus/magiczoomplus.css"/>
 
 </head>
 
@@ -81,57 +86,72 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
                     <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                       <thead>
                         <tr>
-                            <th>No.</th>
-                            <th>Jenis Aduan</th>
-                            <th>Status Aduan</th>
-                            <th>Lihat</th>
+                          <th width="100">Image</th>
+                          <th class="dt-filter-select">Status</th>
+                          <th class="dt-filter-text">Room</th>
+                          <th class="dt-filter-select">Type</th>
+ 
+                          <th>Detail</th>
+                          <th>Available Date</th>
+                          <th>Available Time</th>
+                          <th>Comment</th>
+                          <th>Action</th>
                         </tr>
-                        </thead>
+                      </thead>
+                      <tfoot>
+                          <tr>
+                              <th></th>
+                              <th>Status</th>
+                              <th>Room</th>
+                              <th>Type</th>
+                              
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                          </tr>
+                      </tfoot>
                       <tbody>
-                        <?php 
-                        // $sql = "SELECT * FROM complaint_tbl ";
-                        $technician_id = $_SESSION['user']['id'];
-                        $sql = "SELECT id, technician_id, name, role, jenis_complaint, no_bilik, status FROM users, complaint_tbl WHERE users.userId=complaint_tbl.complainer_id AND technician_id=$technician_id";
-                        $exec = $conn->query($sql);
 
-                        if ($exec) {
-                            $chek_data = $exec->num_rows;
+                    <?php 
 
-                            if ($chek_data == 0) {
-                                // echo "<h4>Tiada Data</h4>";
-                            } else {
+                    // print_r($_SESSION['user']);
 
-                                while ($row = $exec->fetch_assoc()) {
+                    // $complainer_id = $_SESSION['user']['id'];
+                    $complainer_id = 6;
+                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id");
+
+                    while ($db_row = $run_query->fetch_assoc()) { ?>
+                        <tr>
+                            <td><img src="../images/<?= $db_row['img1'] ?>" width="100%" class="MagicZoom"></td>
+                            <td><?= $db_row['status_id']; ?></td>
+                            <td><?= $db_row['room_no']; ?></td>
+                            <td>
+                                <?php 
+
+                                $query = $conn->query("SELECT * FROM complaint_type WHERE id=".$db_row['complaint_type']."");
+                                $row = $query->fetch_assoc();
+                                echo $row['type'];
+
+                                ?>
                                     
-                                    $id = $row['id'];
-                                    $jenis_complaint = $row['jenis_complaint'];
-                                    $status = $row['status'];
+                                
+                            </td>
+                           
+                            <td><?= $db_row['detail']; ?></td>
+                            <td><?= $db_row['available_date']; ?></td>
+                            <td><?= $db_row['available_time']; ?></td>
+                           <!--  <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td> -->
+                           <td><?= $db_row['comment'] == '' ? 'No comment' : $db_row['comment']; ?></td>
+                            <td><a class="btn btn-primary btn-sm" href="complaint_detail.php?id=<?= $db_row['id']; ?>">View / Update</a></td>
+                        </tr>
 
-                                    echo "<tr>";
-                                    echo "<td>{$id}</td>";
-                                    echo "<td>{$jenis_complaint}</td>";
-                                    if ($status == 'Pending') {
-                                        echo "<td class=\"w3-red\">{$status}</td>";
-                                    } elseif($status == 'KIV'){
-                                        echo "<td class=\"w3-blue\">{$status}</td>";
-                                    } else {
-                                        echo "<td class=\"w3-green\">{$status}</td>";
-                                    }
-                                    
-                                    echo "<td><a class=\"btn btn-primary btn-sm shadow-sm\" href=\"complaint_detail.php?id={$id}\"><i class=\"fas fa-fw fa-eye\"></i> lihat</a></td>";
-                                    echo "</tr>";
-                                }
-                            
-                            }
-                        } else {
-                            die($conn->error);
-                            exit();
-                        }
+                        <?php
+                    }
+                     ?>
                         
-                         
-                        ?>
-                    
-                    </tbody>
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -184,7 +204,6 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
   <!-- Page level custom scripts -->
   <!-- <script src="js/demo/datatables-demo.js"></script> -->
   <script src="vendor/chart.js/Chart.min.js"></script>
-
   <!-- Page level custom scripts -->
   <script src="js/demo/chart-area-demo.js"></script>
   <script src="js/demo/chart-pie-demo.js"></script>
@@ -195,16 +214,9 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
   <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
   <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
-  <script>
-      $(document).ready( function () {
-            $('#dataTable').DataTable({
-                dom: 'lfrtipB',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-        } );
-  </script>
+
+  <script src="js/demo/datatables-demo.js"></script>
+  <script type="text/javascript" src="magiczoomplus/magiczoomplus.js"></script>
 
 </body>
 

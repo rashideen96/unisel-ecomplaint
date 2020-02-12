@@ -6,69 +6,70 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
 
 isset($_GET['id']) ? $complaint_id = $_GET['id'] : '';
 
+// $sql = "SELECT 
+//         id, 
+//         name, 
+//         matricNum, 
+//         role, faculty, 
+//         phoneNum, 
+//         jenis_complaint, 
+//         detail, 
+//         no_bilik, 
+//         tarikh, 
+//         masa, 
+//         status 
+//         FROM users, complaint_tbl 
+//         WHERE users.userId = complaint_tbl.complainer_id 
+//         AND id=$complaint_id";
+
 $sql = "SELECT 
         id, 
-        name, 
-        matricNum, 
-        role, faculty, 
-        phoneNum, 
-        jenis_complaint, 
+        technician_id, 
+        status_id,
+        room_no,
+        complaint_type,
+        img1,
+        img2,
+        img3,
         detail, 
-        no_bilik, 
-        tarikh, 
-        masa, 
-        status 
-        FROM users, complaint_tbl 
-        WHERE users.userId = complaint_tbl.complainer_id 
+        available_date, 
+        available_time,
+        comment
+        FROM users, complaints 
+        WHERE users.userId = complaints.complainer_id 
         AND id=$complaint_id";
 
 
 $query = $conn->query($sql);
-if ($query) {
-    
-    while ($row = $query->fetch_assoc()) {
-        
-        // Student info
-        $complaint_id = $row['id'];
-        $name = $row['name'];
-        $matric_number = $row['matricNum'];
-        $jawatan = $row['role'];
-        $faculty = $row['faculty'];
-        $phone_num = $row['phoneNum'];
 
-        // complaint data
-        $jenis_complaint = $row['jenis_complaint'];
-        $detail = $row['detail'];
-        $no_bilik = $row['no_bilik'];
-        $tarikh = $row['tarikh'];
-        $masa = $row['masa'];
-        $status = $row['status'];
-
-    }
+if (!$query) die($conn->error);
+else {
+  $row = $query->fetch_assoc();
+  $complaint_id = $row['id'];
+  $technician_id = $row['technician_id'];
+  $status_id = $row['status_id'];
+  $room_no = $row['room_no'];
+  $complaint_type = $row['complaint_type'];
+  $c = $conn->query("SELECT * FROM complaint_type WHERE id = $complaint_type");
+  $r = $c->fetch_assoc();
+  $complaint_name = $r['type'];
+  $images = [
+    $row['img1'],
+    $row['img2'],
+    $row['img3']
+  ];
+  $detail = $row['detail'];
+  $available_date = $row['available_date'];
+  $available_time = $row['available_time'];
+  $comment = $row['comment'];
 }
-
-if (isset($_POST['send'])) {
-    $mesej = $_POST['mesej'];
-
-    $sql = "INSERT INTO message_tbl(complaint_id, mesej) VALUES($complaint_id, '$mesej')";
-    if ($conn->query($sql)) {
-        header("Location: complaint_detail.php?id=$complaint_id");
-    } else {
-        die($conn->error);
-    }
-}
-
 
 
 ?>
 
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="utf-8">
@@ -85,9 +86,6 @@ if (isset($_POST['send'])) {
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
-  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css">
-
 </head>
 
 <body id="page-top">
@@ -112,107 +110,108 @@ if (isset($_POST['send'])) {
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
-          <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="goBack();"><i class="fas fa-chevron-left"></i> Kembali</button>
-
-            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="print();"><i class="fas fa-print fa-sm"></i> Cetak</button>
+            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="goBack();"><i class="fas fa-chevron-left fa-sm"></i> Back</button>
           </div>
-         
+
+          <!-- Card Row -->
+
+          <!-- Content Row -->
+
           <div class="row">
 
             <!-- Area Chart -->
             <div class="col-xl-12 col-lg-12">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Detail</h6>
-                  
-                </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <table class="table table-bordered">
-                    <tbody>
-                    <tr>
-                        <th>Nama: </th>
-                        <td><?php echo $name; ?></td>
-                        <th>No.ID: </th>
-                        <td><?php echo $matric_number; ?></td>
-                    </tr>
-                    <tr>
-                        <th>Jawatan: </th>
-                        <td><?php echo $jawatan ?></td>
-                        <th>Pejabat/Jabatan/Fakulti: </th>
-                        <td><?php echo $faculty ?></td>
-                    </tr>
-                    <tr>
-                        <th>No.Telefon: </th>
-                        <td><?php echo $phone_num ?></td>
-                        <th>No.Telefon(Pejabat): </th>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <th>Aduan Kerosakan: </th>
-                        <td colspan="3"><?php echo $jenis_complaint ?></td>
-                    </tr>
-                    <tr>
-                        <th>Masalah/Ulasan: </th>
-                        <td colspan="3"><?php echo $detail ?></td>
-                    </tr>
-                    <tr>
-                    <th>Gambar: </th>
-                    <td colspan="3">
-                    <?php 
+                  <form action="" method="POST">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[0] ?>" width="100%">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[1] ?>" width="100%">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[2] ?>" width="100%">
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group row">
+                          <label class="col-sm-2 col-form-label">ID.</label>
+                          <div class="col-sm-10">
+                            <input type="id" name="id" class="form-control  rounded-0" value="<?= $complaint_id ?>" disabled>
+                          </div>
+                      </div>
+                     
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Room No.</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" placeholder="A3-2F-U4" name="no_bilik" required autocomplete="off" id="room_no" value="<?= $room_no ?>" disabled>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Complaint Type</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" value="<?= $complaint_name ?>" disabled>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Detail</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control  rounded-0" disabled><?= $detail; ?></textarea>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Available Date</label>
+                        <div class="col-sm-10">
+                           <input type="text" class="form-control  rounded-0" value="<?= $available_date ?>" disabled>
+                        </div>    
+                       
+                      </div>
+                      
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Available Time</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" value="<?= $available_time ?>" disabled>
+                        </div>
+                        
+                      </div>
 
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10">
+                          <select name="status" class="form-control  rounded-0" id="status" required>
+                              <option value="">Please Select</option>
+                              <option value="electrical">KIV</option>
+                              <option value="wifi">Closed</option>
+                              
+                          </select>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Comment</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control  rounded-0" rows="10"><?= $comment; ?></textarea>
+                        </div>
+                        
+                      </div>
 
-                    $img_query = "SELECT * FROM upload_img WHERE complaint_id=$complaint_id";
-                    $img_exec  = $conn->query($img_query);
-
-                    if ($img_exec) {
-                        while ($row = $img_exec->fetch_assoc()) {
-                            $img_id = $row['id'];
-                            $img_name = $row['img_name'];
-
-                            echo "<a href=\"../photo/{$img_name}\"><img src=\"../photo/{$img_name}\" alt=\"\" width=\"100px\" height=\"100px\" class=\"w3-hover-opacity\"></a>";
-                        }
-                    }
-
-                     ?>
-                    </td>
-                    </tr>
-                </tbody>
-                </table>
-                <br>
-                <table class="table table-bordered">
-                    <tbody>
-                    <tr>
-                        <th>Bangunan: </th>
-                        <td><?php echo $no_bilik ?></td>
-                        <th>Tarikh Temuduga: </th>
-                        <td><?php echo $tarikh ?></td>
-                    </tr>
-                    <tr>
-                        <th>Masa: </th>
-                        <td><?php echo $masa ?></td>
-                        <th>Keutamaan: </th>
-                        <td>Segera</td>
-                    </tr>
-                    <tr>
-                        <th>Status: </th>
-                        <td colspan="3"><select name="status" id="status" class="form-control rounded-0">
-                                <?php echo "<option value=\"{$status}\">{$status}</option>" ?>
-                                <option value="KIV">KIV</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Closed">Closed</option>
-                            </select></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <button class="btn btn-primary btn-sm" id="kemaskini"><i class="fas fa-fw fa-edit"></i> Kemaskini</button>
-             
-                
+                      <div class="form-group">
+                        <input type="submit" name="daftar" class="btn btn-primary btn-sm  shadow-sm" id="daftar" value="Update">
+                        <input type="reset" name="reset" class="btn btn-default btn-sm shadow-sm">
+                    </div>
+                    </div>
+                  </div>
+                   </form>
                 </div>
               </div>
             </div>
@@ -220,48 +219,7 @@ if (isset($_POST['send'])) {
            
           </div>
 
-          <div class="row">
-              <div class="col-xl-12 col-lg-12">
-                  <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                      <h6 class="m-0 font-weight-bold text-primary">Komen</h6>
-                      
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                        <tbody>
-                        <?php 
-
-                            $sql = "SELECT * FROM message_tbl WHERE complaint_id=$complaint_id";
-                            $ext = $conn->query($sql);
-
-                            if ($ext) {
-                                while ($row = $ext->fetch_assoc()) {
-                                    $mesej = $row['mesej'];
-
-                                    echo "<tr>";
-                                    echo "<th width=\"20%\">user: </th>";       
-                                    echo "<td>{$mesej}</td>";
-                                    echo "</tr>";
-                                }
-                            }
-                             ?>
-                        <tr>
-                            <td colspan="2">
-                                <form action="" method="post">
-                                <input type="text" class="form-control rounded-0" placeholder="Mesej" name="mesej" required>
-                                <input type="submit" class="btn btn-primary btn-sm" value="Hantar" name="send">
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                </div>
-              </div>
-        </div>
+          
 
         </div>
         <!-- /.container-fluid -->
@@ -296,38 +254,38 @@ if (isset($_POST['send'])) {
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
-  <script>
 
-    $(document).ready(function(){
-        $('#kemaskini').click(function(){
-            var status = $('#status').val();
-            $.ajax({
-                url: "ajax/update_complaint.php",
-                method: "POST",
-                data: {
-                    status: status,
-                    complaint_id: <?= $complaint_id; ?>
-                },
-                success: function(data) {
-                    alert(data);
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        });
-    });
-
-
-  function goBack() {
-    window.history.back();
-  }
-
-  </script>
+  <!-- Page level plugins -->
+  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
   <!-- Page level custom scripts -->
-  
+  <!-- <script src="js/demo/datatables-demo.js"></script> -->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+  <!-- Page level custom scripts -->
+  <script src="js/demo/chart-area-demo.js"></script>
+  <script src="js/demo/chart-pie-demo.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.flash.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+
+  <script src="js/demo/datatables-demo.js"></script>
+  <script type="text/javascript">
+    function goBack() {
+      window.history.back();
+    }
+  </script>
 
 </body>
 
 </html>
+
+
+
+
+
+
