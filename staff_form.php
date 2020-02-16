@@ -1,8 +1,8 @@
 <div id="staffForm">
 	
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="text-center">Staf Registration / Daftar Staf</h2><hr>
+        <div class="col-md-6 col-sm-12">
+            <div class="login-form2">
+                <h2>Staff</h2><hr>
 
                 <form action="" method="post" id="formRegisterStaff">
 
@@ -69,9 +69,7 @@
                         <div class="col-sm-2">
                           <input type="submit" class="btn btn-primary btn-xs rounded-pill" value="Daftar" id="register">
                         </div>
-                        <div class="col-sm-2">
-                          <input type="reset" class="btn btn-primary btn-xs rounded-pill" value="Batal" id="cancel">
-                        </div>
+                        
                     </div>
                     
                 </form>

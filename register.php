@@ -11,47 +11,31 @@
     <title>Daftar</title>
 </head>
 <body>
-<!-- <div class="w3-center">
-    <img src="http://tahfizselangor.unisel.edu.my/unisel.png" alt="Universiti Selangor" class="top-logo">
-    <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="top-logo">
-</div> -->
-<!-- <br> -->
-<div class="container">
-    <div class="row pb-3">
-        <div class="col-lg-12 text-center">
+
+
+    <div class="sidenav">
+         <div class="login-main-text">
+            <h2>Student/Staff Login</h2>
+            <p>Register as / Daftar sebagai:</p>
+            <div class="form-group">
+                <label>Pelajar</label>
+                <input type="radio" name="register" id="studRegister" checked>
+                <label>Staff</label>
+                <input type="radio" name="register" id="staffRegister">
+            </div><hr>
+            <button class="btn btn-info mb-5" onclick="login();">Log Masuk</button>
             
-        <img src="http://tahfizselangor.unisel.edu.my/unisel.png" alt="Universiti Selangor" class="">
-        <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="top-logo">
-        </div>
+         </div>
+         
     </div>
-</div>
-
-<?php include("include/nav.php"); ?>
-<br>
-
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="radio">
-                <h4>Daftar / Register</h4>
-                <div class="form-group">
-                    <label>Pelajar</label>
-                    <input type="radio" name="register" id="studRegister" checked>
-                    <label>Staff</label>
-                    <input type="radio" name="register" id="staffRegister">
-                </div>
-            </div>
-            
-        </div>
-
+    <div class="main">
         <?php include('student_form.php'); ?>
         <?php include('staff_form.php'); ?>
-        
     </div>
-</div>
 
-<?php require_once "include/footer.php"; ?>
 </body>
+
+
 <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -114,6 +98,8 @@
                 }
             });
         }) 
+
+        
         // $('#no_matrik').on('focusout', function(){
         //     var val = $(this).val();
         //     console.log(val);
@@ -156,6 +142,10 @@
 
         // });
     });
+
+    function login() {
+            window.location.href = 'login.php';
+        }
 </script>
 <style>
     .bg-danger{
@@ -163,3 +153,7 @@
     }
 </style>
 </html>
+
+
+
+
