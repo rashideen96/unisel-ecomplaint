@@ -1,268 +1,299 @@
 <?php
 
 session_start();
-
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
-
-} else{
-  header('Location: index.php');
-}
 include "include/db.php";
-if (isset($_GET['id'])) {
-    $complaint_id = $_GET['id'];
+if (!isset($_SESSION['admin_id']) && $_SESSION['role'] !== 'admin') header('Location: index.php');
+
+isset($_GET['id']) ? $complaint_id = $_GET['id'] : '';
+
+$sql = "SELECT 
+        id, 
+        technician_id, 
+        status_id,
+        room_no,
+        complaint_type,
+        img1,
+        img2,
+        img3,
+        detail, 
+        available_date, 
+        available_time,
+        comment
+        FROM users, complaints 
+        WHERE users.userId = complaints.complainer_id 
+        AND id=$complaint_id";
+
+
+$query = $conn->query($sql);
+
+if (!$query) die($conn->error);
+else {
+  $row = $query->fetch_assoc();
+  $complaint_id = $row['id'];
+  $technician_id = $row['technician_id'];
+  $status_id = $row['status_id'];
+  $room_no = $row['room_no'];
+  $complaint_type = $row['complaint_type'];
+  $c = $conn->query("SELECT * FROM complaint_type WHERE id = $complaint_type");
+  $r = $c->fetch_assoc();
+  $complaint_name = $r['type'];
+  $images = [
+    $row['img1'],
+    $row['img2'],
+    $row['img3']
+  ];
+  $detail = $row['detail'];
+  $available_date = $row['available_date'];
+  $available_time = $row['available_time'];
+  $comment = $row['comment'];
 }
+
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/w3.css">
-    <link rel="stylesheet" href="css/style.css">
-    <title>login</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Detail</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body id="page-top">
 
-<div class="w3-center">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
 
-    <img src="http://tahfizselangor.unisel.edu.my/unisel.png" alt="Universiti Selangor" class="top-logo">
-    <img src="http://hafizhizers.000webhostapp.com/eComplaint/img/icon.JPG" alt="" class="top-logo">
-</div>
-<br>
+    <!-- Sidebar -->
+    <?php include('include/sidebar.php'); ?>
+    <!-- End of Sidebar -->
 
-<?php include "include/nav.php"; ?>
-<div class="w3-container">
-    <div class="w3-cell-row">
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
 
-        <div class="w3-container w3-cell">
-            <a href="complaint_list.php" class="w3-button w3-light-gray w3-border">< Back</a><br><br>
-            <?php 
+      <!-- Main Content -->
+      <div id="content">
 
-            $sql = "SELECT id, name, matricNum, role, faculty, phoneNum, technician_id,jenis_complaint, detail, no_bilik, tarikh, masa, status FROM users, complaint_tbl WHERE users.userId = complaint_tbl.complainer_id AND id=$complaint_id";
+        <!-- Topbar -->
+        <?php include('include/top_bar.php'); ?>
+        
+        <!-- End of Topbar -->
 
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="goBack();"><i class="fas fa-chevron-left fa-sm"></i> Back</button>
+          </div>
 
-            $query = mysqli_query($conn, $sql);
-            if ($query) {
-                
-                while ($row = mysqli_fetch_assoc($query)) {
-                    
-                    // Student info
-                    $complaint_id = $row['id'];
-                    $name = $row['name'];
-                    $matric_number = $row['matricNum'];
-                    $jawatan = $row['role'];
-                    $faculty = $row['faculty'];
-                    $phone_num = $row['phoneNum'];
+          <!-- Content Row -->
 
-                    // complaint data
-                    $technician_id = $row['technician_id'];
-                    $jenis_complaint = $row['jenis_complaint'];
-                    $detail = $row['detail'];
-                    $no_bilik = $row['no_bilik'];
-                    $tarikh = $row['tarikh'];
-                    $masa = $row['masa'];
-                    $status = $row['status'];
+          <div class="row">
 
-                }
-            }
+            <!-- Area Chart -->
+            <div class="col-xl-12 col-lg-12">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[0] ?>" width="100%">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[1] ?>" width="100%">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="../images/<?= $images[2] ?>" width="100%">
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <form action="" method="POST" id="detailForm">
+                        
+                      <div class="form-group row">
+                          <label class="col-sm-2 col-form-label">ID.</label>
+                          <div class="col-sm-10">
+                            <input type="id" id="comp_id" name="id" class="form-control  rounded-0" value="<?= $complaint_id ?>" disabled>
+                          </div>
+                      </div>
+                     
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Room No.</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" placeholder="A3-2F-U4" name="no_bilik" required autocomplete="off" id="room_no" value="<?= $room_no ?>" disabled>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Complaint Type</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" value="<?= $complaint_name ?>" disabled>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Detail</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control  rounded-0" disabled><?= $detail; ?></textarea>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Available Date</label>
+                        <div class="col-sm-10">
+                           <input type="text" class="form-control  rounded-0" value="<?= $available_date ?>" disabled>
+                        </div>    
+                       
+                      </div>
+                      
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Available Time</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control  rounded-0" value="<?= $available_time ?>" disabled>
+                        </div>
+                        
+                      </div>
 
-            if (isset($_POST['send'])) {
-                $mesej = $_POST['mesej'];
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Assign Technician</label>
+                        <div class="col-sm-10">
+                          <select name="technician" class="form-control  rounded-0" id="technician" required>
+                              <option value="">Please Select</option>
+                              <?php 
 
-                $sql = "INSERT INTO message_tbl(complaint_id, mesej) VALUES($complaint_id, '$mesej')";
-                if (mysqli_query($conn, $sql)) {
-                    header("Location: complaint_detail.php?id=$complaint_id");
-                } else {
-                    die(mysqli_error($conn));
-                }
-            }
+                              $db_query = $conn->query("SELECT * FROM technician");
 
-             ?>
+                              while ( $db_row = $db_query->fetch_assoc()) {
+                                  echo "<option value=\"".$db_row['id']."\">".$db_row['name']."</option>";
+                              }
+                               ?>
+                              
+                          </select>
+                        </div>
+                        
+                      </div>
 
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10">
+                          <select name="status" class="form-control  rounded-0" id="status">
+                              <option value="">Please Select</option>
+                              <option value="1">KIV</option>
+                              <option value="2">Closed</option>
+                              
+                          </select>
+                        </div>
+                        
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Comment</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control  rounded-0" rows="10" name="comment"><?= $comment; ?></textarea>
+                        </div>
+                        
+                      </div>
 
-            <table class="w3-table w3-border">
-                <tbody>
-                <tr>
-                    <th>Nama: </th>
-                    <td><?php echo $name; ?></td>
-                    <th>No.ID: </th>
-                    <td><?php echo $matric_number; ?></td>
-                </tr>
-                <tr>
-                    <th>Jawatan: </th>
-                    <td><?php echo $jawatan ?></td>
-                    <th>Pejabat/Jabatan/Fakulti: </th>
-                    <td><?php echo $faculty ?></td>
-                </tr>
-                <tr>
-                    <th>No.Telefon: </th>
-                    <td><?php echo $phone_num ?></td>
-                    <th>Technician: </th>
-                    
-                        <td>
-                            <select name="technician" id="technician" class="w3-input">
-                                
-                            <?php 
+                      <div class="form-group">
+                        <input type="submit" name="daftar" class="btn btn-primary btn-sm  shadow-sm" id="daftar" value="Update">
+                        <input type="reset" name="reset" class="btn btn-default btn-sm shadow-sm">
+                    </div>
+                    </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                            $sql_dept = "SELECT name FROM technician WHERE id=$technician_id";
-                            $sql_qry = mysqli_query($conn, $sql_dept);
-                            if ($sql_qry) {
-                                while ($row = mysqli_fetch_assoc($sql_qry)) {
-                                    $dept_id = $row['id'];
-                                    $dept_name = $row['name'];
-                                    echo "<option value=\"{$id}\">{$dept_name}</option>";
-                                }
-                            }
+           
+          </div>
 
-                            $technician_sql = "SELECT * FROM technician";
-                            $technician_qry = mysqli_query($conn, $technician_sql);
-                            if ($technician_sql) {
-                                while ($row = mysqli_fetch_assoc($technician_qry)) {
-                                    $id = $row['id'];
-                                    $technician_name = $row['name'];
-                                    echo "<option value=\"{$id}\">{$technician_name}</option>";
-                                }
-                            }
-                             ?>
-                        </select></td>
-                </tr>
-                <tr>
-                    <th>Aduan Kerosakan: </th>
-                    <td colspan="3"><?php echo $jenis_complaint ?></td>
-                </tr>
-                <tr>
-                    <th>Masalah/Ulasan: </th>
-                    <td colspan="3"><?php echo $detail ?></td>
-                </tr>
-                <tr>
-                <th>Gambar: </th>
-                <td colspan="3">
-                <?php 
-
-
-                $img_query = "SELECT * FROM upload_img WHERE complaint_id=$complaint_id";
-                $img_exec  = mysqli_query($conn, $img_query);
-
-                if ($img_exec) {
-                    while ($row = mysqli_fetch_assoc($img_exec)) {
-                        $img_id = $row['id'];
-                        $img_name = $row['img_name'];
-
-                        echo "<a href=\"../photo/{$img_name}\"><img src=\"../photo/{$img_name}\" alt=\"\" width=\"100px\" height=\"100px\" class=\"w3-hover-opacity\"></a>";
-                    }
-                }
-
-                 ?>
-                </td>
-                </tr>
-            </tbody>
-            </table>
-            <br>
-            <table class="w3-table w3-border">
-                <tbody>
-                <tr>
-                    <th>Bangunan: </th>
-                    <td><?php echo $no_bilik ?></td>
-                    <th>Tarikh Temuduga: </th>
-                    <td><?php echo $tarikh ?></td>
-                </tr>
-                <tr>
-                    <th>Masa: </th>
-                    <td><?php echo $masa ?></td>
-                    <th>Keutamaan: </th>
-                    <td><select name="priority" id="priority" class="w3-input">
-                            <option value="LOW">LOW</option>
-                            <option value="MEDIUM">MEDIUM</option>
-                            <option value="HIGH">HIGH</option>
-                            <option value="CRITICAL">CRITICAL</option>
-                        </select></td>
-                </tr>
-                <tr>
-                    <th>Status: </th>
-                    <td colspan="3"><select name="status" id="status" class="w3-input">
-                            <?php echo "<option value=\"{$status}\">{$status}</option>" ?>
-                            <option value="KIV">KIV</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Closed">Closed</option>
-                        </select></td>
-                </tr>
-                </tbody>
-            </table>
-            <br>
-            <table class="w3-table w3-border">
-                <tbody>
-                <?php 
-
-                    $sql = "SELECT * FROM message_tbl WHERE complaint_id=$complaint_id";
-                    $ext = mysqli_query($conn, $sql);
-
-                    if ($ext) {
-                        while ($row = mysqli_fetch_assoc($ext)) {
-                            $mesej = $row['mesej'];
-
-                            echo "<tr>";
-                            echo "<th width=\"20%\">user: </th>";       
-                            echo "<td>{$mesej}</td>";
-                            echo "</tr>";
-                        }
-                    }
-                     ?>
-                <tr>
-                    <td colspan="2">
-                        <form action="" method="post">
-                        <input type="text" class="w3-input w3-border" placeholder="Mesej" name="mesej" required>
-                        <input type="submit" class="w3-button w3-light-gray" value="Hantar" name="send">
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+          
 
         </div>
-        
+        <!-- /.container-fluid -->
+
+      </div>
+
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <?php include('include/footer.php'); ?>
+      <!-- End of Footer -->
+
     </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 
 
-    <br>
 
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-</div>
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<div class="w3-container">
-    <?php require_once "include/footer.php"?>
-</div>
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
+  <script type="text/javascript">
 
-
+    $('#detailForm').on('submit', function(e) {
+            e.preventDefault();
+            // var formData = new FormData($('#complaintFormPermintaan')[0]); '&NonFormValue=' + NonFormValue
+            var data = $(this).serialize() + '&complaint_id=' + $('#comp_id').val();
+            $.ajax({
+              url: "ajax/update_complaint.php",
+              type: "POST",
+              data: data, 
+              success: function(data) {
+                // clearForm();
+                Swal.fire({
+                      icon: 'success',
+                      title: 'success',
+                      text: data
+                    });
+                console.log(data);
+              },
+              error: function(err) {
+                console.log(err);
+              }
+           
+            });
+        });
+    function goBack() {
+      window.history.back();
+    }
+  </script>
 
 </body>
-<script src="js/jquery.min.js"></script>
-<script>
-    $('#technician').on('change', function(){
-        var data = $(this).val();
-        window.location.href = "update_dept.php?id=<?php echo $complaint_id ?>&dept="+data;
-    });
-
-    $('#status').on('change', function(){
-
-        var data = $(this).val();
-        console.log(data);
-        window.location.href = "update_status.php?id=<?php echo $complaint_id ?>&status="+data;
-    });
-
-    // $('#btn_kemaskini').on('click', function(e){
-    //     e.preventDefault();
-    //     // console.log('clicked');
-
-    //     var dept = $('#technician').val();
-    //     var status = $('#status').val();
-
-    //     window.location.href = "update_dept.php?id=<?php echo $complaint_id ?>&dept="+data+"&status="+status;
-    // });
-</script>
 
 </html>
+
+
+
+
+
+

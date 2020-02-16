@@ -171,7 +171,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
                           <th>Available Date</th>
                           <th>Available Time</th>
                           <th>Comment</th>
-                          <th>View</th>
+                          <!-- <th>View</th> -->
                         </tr>
                       </thead>
                       <tfoot>
@@ -186,7 +186,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
                               <th></th>
                               <th></th>
                               <th></th>
-                              <th></th>
+                              <!-- <th></th> -->
                           </tr>
                       </tfoot>
                       <tbody>
@@ -196,13 +196,37 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
                     // print_r($_SESSION['user']);
 
                     $complainer_id = $_SESSION['user']['userId'];
-                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id");
+                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id ORDER BY id DESC");
 
                     while ($db_row = $run_query->fetch_assoc()) { ?>
                         <tr>
                             <td><img src="images/<?= $db_row['img1'] ?>" width="100%"></td>
-                            <td><?= $db_row['technician_id'] ?></td>
-                            <td><?= $db_row['status_id']; ?></td>
+                            <td>
+                                <?php 
+                                $query = $conn->query("SELECT * FROM technician WHERE id = ".$db_row['technician_id']."");
+                                $row = $query->fetch_assoc();
+
+                                echo $db_row['technician_id'] == 0 ? "not set" : $row['name'];
+                                
+                                ?>       
+                            </td>
+                            <td>
+                              <?php 
+
+                              // $db_row['status_id']; 
+                              switch ($db_row['status_id']) {
+                                case 1:
+                                  echo "KIV";
+                                  break;
+                                case 2:
+                                  echo "Closed";
+                                  break;
+                                default:
+                                  echo "Pending";
+                                  break;
+                              }
+                              ?>
+                            </td>
                             <td><?= $db_row['room_no']; ?></td>
                             <td>
                                 <?php 
@@ -221,7 +245,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
                             <td><?= $db_row['available_time']; ?></td>
                            <!--  <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td> -->
                            <td><?= $db_row['comment'] == '' ? 'No comment' : $db_row['comment']; ?></td>
-                            <td><a class="btn btn-primary btn-sm" href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td>
+                            <!-- <td><a class="btn btn-primary btn-sm" href="view_complaint.php?compid=<?= $db_row['id']; ?>">View</a></td> -->
                         </tr>
 
                         <?php

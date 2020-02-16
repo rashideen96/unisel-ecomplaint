@@ -114,8 +114,6 @@ else {
             <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="goBack();"><i class="fas fa-chevron-left fa-sm"></i> Back</button>
           </div>
 
-          <!-- Card Row -->
-
           <!-- Content Row -->
 
           <div class="row">
@@ -126,7 +124,6 @@ else {
                 <!-- Card Header - Dropdown -->
                 <!-- Card Body -->
                 <div class="card-body">
-                  <form action="" method="POST">
                   <div class="row">
                     <div class="col-lg-4">
                       <img src="../images/<?= $images[0] ?>" width="100%">
@@ -141,10 +138,12 @@ else {
                   <hr>
                   <div class="row">
                     <div class="col-lg-12">
+                      <form action="" method="POST" id="detailForm">
+                        
                       <div class="form-group row">
                           <label class="col-sm-2 col-form-label">ID.</label>
                           <div class="col-sm-10">
-                            <input type="id" name="id" class="form-control  rounded-0" value="<?= $complaint_id ?>" disabled>
+                            <input type="id" id="comp_id" name="id" class="form-control  rounded-0" value="<?= $complaint_id ?>" disabled>
                           </div>
                       </div>
                      
@@ -190,8 +189,8 @@ else {
                         <div class="col-sm-10">
                           <select name="status" class="form-control  rounded-0" id="status" required>
                               <option value="">Please Select</option>
-                              <option value="electrical">KIV</option>
-                              <option value="wifi">Closed</option>
+                              <option value="1">KIV</option>
+                              <option value="2">Closed</option>
                               
                           </select>
                         </div>
@@ -200,7 +199,7 @@ else {
                       <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Comment</label>
                         <div class="col-sm-10">
-                          <textarea class="form-control  rounded-0" rows="10"><?= $comment; ?></textarea>
+                          <textarea class="form-control  rounded-0" rows="10" name="comment" required><?= $comment; ?></textarea>
                         </div>
                         
                       </div>
@@ -209,9 +208,9 @@ else {
                         <input type="submit" name="daftar" class="btn btn-primary btn-sm  shadow-sm" id="daftar" value="Update">
                         <input type="reset" name="reset" class="btn btn-default btn-sm shadow-sm">
                     </div>
+                    </form>
                     </div>
                   </div>
-                   </form>
                 </div>
               </div>
             </div>
@@ -254,27 +253,33 @@ else {
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
-  <!-- Page level plugins -->
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <!-- <script src="js/demo/datatables-demo.js"></script> -->
-  <script src="vendor/chart.js/Chart.min.js"></script>
-  <!-- Page level custom scripts -->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.flash.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.print.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
-  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
-
-  <script src="js/demo/datatables-demo.js"></script>
   <script type="text/javascript">
+
+    $('#detailForm').on('submit', function(e) {
+            e.preventDefault();
+            // var formData = new FormData($('#complaintFormPermintaan')[0]); '&NonFormValue=' + NonFormValue
+            var data = $(this).serialize() + '&complaint_id=' + $('#comp_id').val();
+            $.ajax({
+              url: "ajax/update_complaint.php",
+              type: "POST",
+              data: data, 
+              success: function(data) {
+                // clearForm();
+                Swal.fire({
+                      icon: 'success',
+                      title: 'success',
+                      text: data
+                    });
+                console.log(data);
+              },
+              error: function(err) {
+                console.log(err);
+              }
+           
+            });
+        });
     function goBack() {
       window.history.back();
     }

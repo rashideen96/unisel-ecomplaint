@@ -27,7 +27,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
   <link href="css/jquery.timepicker.css" rel="stylesheet">
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link href="vendor/dist/css/jasny-bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote.min.css" rel="stylesheet">
+  <!-- <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote.min.css" rel="stylesheet"> -->
 
 </head>
 
@@ -97,7 +97,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="profile.php">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
@@ -167,11 +167,6 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
                             	<?php
                             }
                              ?>
-                            <!-- <option value="electrical">Electrical / Peralatan Elektrik</option>
-                            <option value="wifi">Modem / Wifi</option>
-                            <option value="furniture">Furniture / Perabot</option>
-                            <option value="civil">Civil / Sivil</option>
-                            <option value="security">Security / Keselamatan</option> -->
                         </select>
                     </div>
                     <div class="form-group row">
@@ -351,7 +346,7 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
   <script src="js/jquery.timepicker.min.js"></script>
 
   <script src="vendor/dist/js/jasny-bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <!-- Page level plugins -->
   
@@ -443,14 +438,14 @@ if (!isset($_SESSION['user'])) header('Location: login.php');
             });
         });
 
-        $('#detail').summernote({
-        	height: 200,
-        	placeholder: 'Detail'
-        });
-        $('#detail2').summernote({
-        	height: 200,
-        	placeholder: 'Permintaan'
-        });
+        // $('#detail').summernote({
+        // 	height: 200,
+        // 	placeholder: 'Detail'
+        // });
+        // $('#detail2').summernote({
+        // 	height: 200,
+        // 	placeholder: 'Permintaan'
+        // });
 
         $('#from').timepicker({
         'minTime': '9:00am',

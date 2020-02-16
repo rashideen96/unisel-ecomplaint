@@ -159,7 +159,7 @@ if ($db_query) {
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                   <form action="" method="POST" enctype="multipart/form-data" id="profileForm">
+                   <form action="" method="POST" id="profileForm">
                         <div class="form-group">
                             <input type="hidden" name="userId" value="<?= $_SESSION['user']['userId']; ?>">
                             <label>Name</label>
@@ -175,7 +175,7 @@ if ($db_query) {
                         </div>
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" name="password" class="form-control form-control-sm rounded-0" value="<?= $password; ?>">
+                            <input type="password" name="password" class="form-control form-control-sm rounded-0">
                         </div>
                         <div class="form-group">
                             <label>Matric Number</label>
@@ -258,17 +258,7 @@ if ($db_query) {
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
 
-  <!-- Page level plugins -->
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="js/demo/datatables-demo.js"></script>
-  <script src="vendor/chart.js/Chart.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script>
     $(document).ready(function(){
         $('#profileForm').on('submit', function(e) {

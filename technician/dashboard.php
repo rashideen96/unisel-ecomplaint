@@ -69,7 +69,7 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
           <?php include('include/card_row.php'); ?>
 
           <!-- Content Row -->
-
+          <!-- Complaint list -->
           <div class="row">
 
             <!-- Area Chart -->
@@ -120,12 +120,30 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
 
                     // $complainer_id = $_SESSION['user']['id'];
                     $complainer_id = 6;
-                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id");
+                    $run_query = $conn->query("SELECT * FROM complaints WHERE complainer_id = $complainer_id AND technician_id = ".$_SESSION['user']['id']." ORDER BY id DESC");
 
                     while ($db_row = $run_query->fetch_assoc()) { ?>
                         <tr>
-                            <td><img src="../images/<?= $db_row['img1'] ?>" width="100%" class="MagicZoom"></td>
-                            <td><?= $db_row['status_id']; ?></td>
+                            <td><img src="../images/<?= $db_row['img1'] ?>" width="100%"></td>
+                            <td>
+                              <?php 
+
+                              // $db_row['status_id']; 
+                              switch ($db_row['status_id']) {
+                                case 1:
+                                  echo "KIV";
+                                  break;
+                                case 2:
+                                  echo "Closed";
+                                  break;
+                                default:
+                                  echo "Pending";
+                                  break;
+                              }
+
+                  
+                              ?>
+                            </td>
                             <td><?= $db_row['room_no']; ?></td>
                             <td>
                                 <?php 
@@ -142,7 +160,7 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
                             <td><?= $db_row['detail']; ?></td>
                             <td><?= $db_row['available_date']; ?></td>
                             <td><?= $db_row['available_time']; ?></td>
-                           <!--  <td><?= $db_row['status'] == '' ? 'Not Processe' : $db_row['status']; ?></td> -->
+
                            <td><?= $db_row['comment'] == '' ? 'No comment' : $db_row['comment']; ?></td>
                             <td><a class="btn btn-primary btn-sm" href="complaint_detail.php?id=<?= $db_row['id']; ?>">View / Update</a></td>
                         </tr>
@@ -160,7 +178,6 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
 
            
           </div>
-
           
 
         </div>
@@ -205,8 +222,6 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
   <!-- <script src="js/demo/datatables-demo.js"></script> -->
   <script src="vendor/chart.js/Chart.min.js"></script>
   <!-- Page level custom scripts -->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.flash.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
@@ -216,7 +231,6 @@ if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'technician') hea
   <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
 
   <script src="js/demo/datatables-demo.js"></script>
-  <script type="text/javascript" src="magiczoomplus/magiczoomplus.js"></script>
 
 </body>
 
