@@ -1,12 +1,6 @@
 <?php
 
-session_start();
-include('include/db.php');
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
-
-} else{
-  header('Location: index.php');
-}
+include "include/session.php";
 
 isset($_GET['tid']) ? $_GET['tid'] : 0;
 

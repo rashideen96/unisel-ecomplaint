@@ -1,17 +1,4 @@
-<?php
-
-session_start();
-include('include/db.php');
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
-
-} else{
-  header('Location: index.php');
-}
-
-
-
-?>
-
+<?php include "include/session.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <style type="text/css">
@@ -74,7 +61,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Complaint Lists</h6>
-                  
+                  <a href="export_csv.php?tbl_name=complaints" class="btn btn-success btn-sm"><i class="fas fa fa-upload"></i> Export CSV</a>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -188,7 +175,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Requests Lists</h6>
-                  
+                  <a href="export_csv.php?tbl_name=complaint_tbl" class="btn btn-success btn-sm"><i class="fas fa fa-upload"></i> Export CSV</a>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">

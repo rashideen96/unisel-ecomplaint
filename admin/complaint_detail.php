@@ -1,8 +1,6 @@
 <?php
 
-session_start();
-include "include/db.php";
-if (!isset($_SESSION['admin_id']) && $_SESSION['role'] !== 'admin') header('Location: index.php');
+include "include/session.php";
 
 isset($_GET['id']) ? $complaint_id = $_GET['id'] : '';
 

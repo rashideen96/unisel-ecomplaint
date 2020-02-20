@@ -1,16 +1,4 @@
-<?php
-
-session_start();
-include('include/db.php');
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
-
-} else{
-  header('Location: index.php');
-}
-
-
-
-?>
+<?php include "include/session.php"; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +48,10 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <a href="complaint.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Import users</a>
+          </div>
+
 
           <!-- Technician list -->
           <div class="row">
@@ -69,6 +61,7 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Users Lists</h6>
+                  <a href="#" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete all users?')">Delete all users</a>
                   
                 </div>
                 <!-- Card Body -->
@@ -117,8 +110,8 @@ if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
                             <td><?= $db_row['matricNum']; ?></td>
                             <td><?= $db_row['phoneNum']; ?></td>
                             <td><?= $db_row['faculty']; ?></td>
-                            <td><a class="btn btn-primary btn-sm mb-2" href="view_complaint.php?compid=<?= $db_row['userId']; ?>"><i class="fas fa fa-edit"></i> View/Edit</a>
-                            	<a class="btn btn-danger btn-sm" href="users-delete.php?tid=<?= $db_row['id']; ?>" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fas fa fa-trash"></i> Delete</a>
+                            <td><a class="btn btn-primary btn-sm" href="view_complaint.php?compid=<?= $db_row['userId']; ?>"><i class="fas fa fa-edit"></i>Edit</a>
+                            	<a class="btn btn-danger btn-sm" href="users-delete.php?id=<?= $db_row['userId']; ?>" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fas fa fa-trash"></i> Delete</a>
                             </td>
                         </tr>
 

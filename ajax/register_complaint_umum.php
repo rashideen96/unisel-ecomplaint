@@ -15,6 +15,8 @@ if (isset($_POST['no_bilik'])) {
    $available_date = $conn->real_escape_string($_POST['tarikh']);
    $available_time = $conn->real_escape_string($_POST['dari']).'-'.$conn->real_escape_string($_POST['hingga']);
 
+   $gen_id = random_string(5);
+
 
    // img
    // columns
@@ -35,6 +37,7 @@ if (isset($_POST['no_bilik'])) {
         ];
 
          if ($conn->query("INSERT INTO complaints(
+            complaint_id,
             complainer_id, 
             room_no,
             complaint_type,
@@ -45,8 +48,12 @@ if (isset($_POST['no_bilik'])) {
             available_date,
             available_time
            ) 
-            VALUES({$complainer_id},'{$no_bilik}', '{$complaint_type}', '{$img[0]}', '{$img[1]}', '{$img[2]}', '{$detail}', '{$available_date}', '{$available_time}')")) {
+            VALUES('{$gen_id}', {$complainer_id},'{$no_bilik}', '{$complaint_type}', '{$img[0]}', '{$img[1]}', '{$img[2]}', '{$detail}', '{$available_date}', '{$available_time}')")) {
              echo "Aduan berjaya dihantar!";
+
+
+             // Send Email to user after successfully save complaint to db
+             
          } else {
              die($conn->error);
              exit();
@@ -61,6 +68,16 @@ if (isset($_POST['no_bilik'])) {
  }
 
 }
+
+function random_string($length) {
+  $key = '';
+  $keys = array_merge(range(0, 9), range('a', 'z'));
+  for ($i=0; $i < $length; $i++) { 
+    $key .= $keys[array_rand($keys)];
+  }
+  return $key;
+}
+
 // print_r($_POST);
 // print_r($_FILES);
 
