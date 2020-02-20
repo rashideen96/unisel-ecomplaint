@@ -98,7 +98,7 @@ if (isset($_POST['loginStaff'])){
                          <label>Password</label>
                          <input name="password" type="password" class="form-control rounded-0" placeholder="Password" required>
                       </div>
-                      <button name="login" type="submit" class="btn btn-primary shadow-sm rounded-pill"><i class="fa fa-sign-in"></i> Login</button>
+                      <button name="login" type="submit" class="btn btn-primary shadow-sm rounded-0"><i class="fa fa-sign-in"></i> Login</button>
                       <!-- <button type="submit" class="btn btn-secondary">Register</button> -->
                    </form>
                 </div>
@@ -120,7 +120,7 @@ if (isset($_POST['loginStaff'])){
                          <label>Password</label>
                          <input name="password" type="password" class="form-control rounded-0" placeholder="Password" required>
                       </div>
-                      <button name="loginStaff" type="submit" class="btn btn-primary shadow-sm rounded-pill"><i class="fa fa-sign-in"></i> Login</button>
+                      <button name="loginStaff" type="submit" class="btn btn-primary shadow-sm rounded-0"><i class="fa fa-sign-in"></i> Login</button>
                       <!-- <button type="submit" class="btn btn-secondary">Register</button> -->
                    </form>
                 </div>

@@ -1,16 +1,4 @@
-<?php
-
-session_start();
-
-if (isset($_SESSION['id']) && $_SESSION['role'] == 'admin'){
-
-} else{
-  header('Location: index.php');
-}
-
-include "include/db.php";
-
-?>
+<?php include "include/session.php"; ?>
 
 <!DOCTYPE html>
 <html lang="en">
