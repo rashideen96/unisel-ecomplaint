@@ -27,6 +27,11 @@
       <i class="fa fa-fw fa-users"></i>
       <span>Users</span></a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="track-complaint.php">
+      <i class="fa fa-fw fa-search"></i>
+      <span>Track</span></a>
+  </li>
 
   <!-- Sidebar Toggler (Sidebar) -->
   <div class="text-center d-none d-md-inline">
